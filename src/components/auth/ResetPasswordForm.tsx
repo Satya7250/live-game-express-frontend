@@ -1,16 +1,17 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
-  forgotPasswordSchema,
-  type ForgotPasswordFormData,
-} from "@/schemas/forgot-password.schema";
+  resetPasswordSchema,
+  type ResetPasswordFormData,
+} from "@/schemas/reset-password.schema";
 
 import { useAuth } from "@/hooks/useAuth";
 
@@ -25,9 +26,14 @@ const LEAVES = [
   "/leaf_04.png",
 ];
 
-export default function ForgotPasswordForm() {
+export default function ResetPasswordForm() {
+  const router = useRouter();
+  const params = useParams();
+
+  const token = params.token as string;
+
   const {
-    forgotPassword,
+    resetPassword,
     loading,
     error,
   } = useAuth();
@@ -39,20 +45,24 @@ export default function ForgotPasswordForm() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<ForgotPasswordFormData>({
+  } = useForm<ResetPasswordFormData>({
     resolver: zodResolver(
-      forgotPasswordSchema
+      resetPasswordSchema
     ),
   });
 
   const onSubmit = async (
-    data: ForgotPasswordFormData
+    data: ResetPasswordFormData
   ) => {
     try {
       const response =
-        await forgotPassword(data);
+        await resetPassword(token, {
+          password: data.password,
+        });
 
       setSuccess(response.message);
+
+      router.push("/login");
     } catch (error) {
       console.error(error);
     }
@@ -109,7 +119,7 @@ export default function ForgotPasswordForm() {
       />
 
       <div className="login">
-        <h2>Forgot Password</h2>
+        <h2>Reset Password</h2>
 
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -117,14 +127,33 @@ export default function ForgotPasswordForm() {
         >
           <div className="inputBox">
             <input
-              type="email"
-              placeholder="Email Address"
-              {...register("email")}
+              type="password"
+              placeholder="New Password"
+              {...register("password")}
             />
 
-            {errors.email && (
+            {errors.password && (
               <p className="text-red-500 text-sm">
-                {errors.email.message}
+                {errors.password.message}
+              </p>
+            )}
+          </div>
+
+          <div className="inputBox">
+            <input
+              type="password"
+              placeholder="Confirm Password"
+              {...register(
+                "confirmPassword"
+              )}
+            />
+
+            {errors.confirmPassword && (
+              <p className="text-red-500 text-sm">
+                {
+                  errors.confirmPassword
+                    .message
+                }
               </p>
             )}
           </div>
@@ -148,15 +177,15 @@ export default function ForgotPasswordForm() {
               disabled={loading}
             >
               {loading
-                ? "Sending..."
-                : "Send Reset Link"}
+                ? "Resetting..."
+                : "Reset Password"}
             </button>
           </div>
         </form>
 
         <div className="group">
           <Link href="/login">
-            Remember your password? Login
+            Back to Login
           </Link>
         </div>
       </div>

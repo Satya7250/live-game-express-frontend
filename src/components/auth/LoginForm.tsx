@@ -1,16 +1,16 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
-  forgotPasswordSchema,
-  type ForgotPasswordFormData,
-} from "@/schemas/forgot-password.schema";
+  loginSchema,
+  type LoginFormData,
+} from "@/schemas/login.schema";
 
 import { useAuth } from "@/hooks/useAuth";
 
@@ -25,34 +25,26 @@ const LEAVES = [
   "/leaf_04.png",
 ];
 
-export default function ForgotPasswordForm() {
-  const {
-    forgotPassword,
-    loading,
-    error,
-  } = useAuth();
+export default function LoginForm() {
+  const router = useRouter();
 
-  const [success, setSuccess] =
-    useState("");
+  const { login, loading, error } = useAuth();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<ForgotPasswordFormData>({
-    resolver: zodResolver(
-      forgotPasswordSchema
-    ),
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
   });
 
   const onSubmit = async (
-    data: ForgotPasswordFormData
+    data: LoginFormData
   ) => {
     try {
-      const response =
-        await forgotPassword(data);
+      await login(data);
 
-      setSuccess(response.message);
+      router.push("/dashboard");
     } catch (error) {
       console.error(error);
     }
@@ -109,7 +101,7 @@ export default function ForgotPasswordForm() {
       />
 
       <div className="login">
-        <h2>Forgot Password</h2>
+        <h2>Sign In</h2>
 
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -123,8 +115,22 @@ export default function ForgotPasswordForm() {
             />
 
             {errors.email && (
-              <p className="text-red-500 text-sm">
+              <p className="text-red-500 text-sm mt-1">
                 {errors.email.message}
+              </p>
+            )}
+          </div>
+
+          <div className="inputBox">
+            <input
+              type="password"
+              placeholder="Password"
+              {...register("password")}
+            />
+
+            {errors.password && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.password.message}
               </p>
             )}
           </div>
@@ -135,12 +141,6 @@ export default function ForgotPasswordForm() {
             </p>
           )}
 
-          {success && (
-            <p className="text-green-500 text-sm">
-              {success}
-            </p>
-          )}
-
           <div className="inputBox">
             <button
               type="submit"
@@ -148,15 +148,19 @@ export default function ForgotPasswordForm() {
               disabled={loading}
             >
               {loading
-                ? "Sending..."
-                : "Send Reset Link"}
+                ? "Logging in..."
+                : "Login"}
             </button>
           </div>
         </form>
 
         <div className="group">
-          <Link href="/login">
-            Remember your password? Login
+          <Link href="/forgot-password">
+            Forgot Password
+          </Link>
+
+          <Link href="/signup">
+            Signup
           </Link>
         </div>
       </div>
