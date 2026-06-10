@@ -18,5 +18,12 @@ export const profileSchema = z.object({
     .or(z.literal("")),
 });
 
+export const deleteAccountSchema = z.object({
+  password: z.string().min(1, "Password is required"),
+});
+
 export type ProfileFormData =
   z.infer<typeof profileSchema>;
+
+export type DeleteAccountFormData =
+  z.infer<typeof deleteAccountSchema>;

@@ -11,6 +11,9 @@ import {
 } from "@/schemas/change-password.schema";
 
 import { useAuth } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export default function ChangePasswordForm() {
   const {
@@ -58,52 +61,52 @@ export default function ChangePasswordForm() {
       onSubmit={handleSubmit(onSubmit)}
       className="space-y-4"
     >
-      <div>
-        <input
+      <div className="space-y-2">
+        <Label htmlFor="oldPassword">Current Password</Label>
+        <Input
+          id="oldPassword"
           type="password"
-          placeholder="Current Password"
+          placeholder="Enter your current password"
           {...register(
             "oldPassword"
           )}
-          className="w-full border rounded p-3"
         />
-
         {errors.oldPassword && (
-          <p className="text-red-500 text-sm mt-1">
+          <p className="text-sm text-destructive">
             {errors.oldPassword.message}
           </p>
         )}
       </div>
 
-      <div>
-        <input
+      <div className="space-y-2">
+        <Label htmlFor="newPassword">New Password</Label>
+        <Input
+          id="newPassword"
           type="password"
-          placeholder="New Password"
+          placeholder="Enter your new password"
           {...register(
             "newPassword"
           )}
-          className="w-full border rounded p-3"
         />
-
         {errors.newPassword && (
-          <p className="text-red-500 text-sm mt-1">
+          <p className="text-sm text-destructive">
             {errors.newPassword.message}
           </p>
         )}
       </div>
 
-      <div>
-        <input
+      <div className="space-y-2">
+        <Label htmlFor="confirmPassword">Confirm Password</Label>
+        <Input
+          id="confirmPassword"
           type="password"
-          placeholder="Confirm Password"
+          placeholder="Confirm your new password"
           {...register(
             "confirmPassword"
           )}
-          className="w-full border rounded p-3"
         />
-
         {errors.confirmPassword && (
-          <p className="text-red-500 text-sm mt-1">
+          <p className="text-sm text-destructive">
             {
               errors.confirmPassword
                 .message
@@ -113,26 +116,26 @@ export default function ChangePasswordForm() {
       </div>
 
       {error && (
-        <p className="text-red-500">
+        <p className="text-destructive">
           {error}
         </p>
       )}
 
       {success && (
-        <p className="text-green-500">
+        <p className="text-green-600">
           {success}
         </p>
       )}
 
-      <button
+      <Button
         type="submit"
         disabled={loading}
-        className="px-5 py-3 rounded bg-blue-600 text-white"
+        className="w-full"
       >
         {loading
           ? "Updating..."
           : "Change Password"}
-      </button>
+      </Button>
     </form>
   );
 }
