@@ -6,6 +6,7 @@ import {
   Bell,
   MessageCircle,
   Gamepad2,
+  Grid3X3,
 } from "lucide-react";
 
 export const sidebarItems = [
@@ -43,5 +44,10 @@ export const sidebarItems = [
     label: "Rooms",
     href: "/dashboard/rooms",
     icon: Gamepad2,
+  },
+  {
+    label: "Local Tic-Tac-Toe",
+    href: "/dashboard/games/tic-tac-toe",
+    icon: Grid3X3,
   },
 ];

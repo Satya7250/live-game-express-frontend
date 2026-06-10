@@ -62,7 +62,9 @@ export default function ResetPasswordForm() {
 
       setSuccess(response.message);
 
-      router.push("/login");
+      setTimeout(() => {
+        router.push("/login");
+      }, 2000);
     } catch (error) {
       console.error(error);
     }

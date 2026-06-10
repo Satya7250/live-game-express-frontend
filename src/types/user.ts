@@ -1,3 +1,7 @@
+import type { User } from "@/types/auth";
+
+export type Profile = User;
+
 export interface UpdateProfileDto {
   name?: string;
   phone?: string;

@@ -1,29 +1,21 @@
 "use client";
 
-import { useState } from "react";
-
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
 
 import {
   changePasswordSchema,
   type ChangePasswordFormData,
 } from "@/schemas/change-password.schema";
-
 import { useAuth } from "@/hooks/useAuth";
+import { getApiErrorMessage } from "@/lib/api-error";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export default function ChangePasswordForm() {
-  const {
-    changePassword,
-    loading,
-    error,
-  } = useAuth();
-
-  const [success, setSuccess] =
-    useState("");
+  const { changePassword, loading } = useAuth();
 
   const {
     register,
@@ -31,35 +23,28 @@ export default function ChangePasswordForm() {
     reset,
     formState: { errors },
   } = useForm<ChangePasswordFormData>({
-    resolver: zodResolver(
-      changePasswordSchema
-    ),
+    resolver: zodResolver(changePasswordSchema),
   });
 
-  const onSubmit = async (
-    data: ChangePasswordFormData
-  ) => {
+  const onSubmit = async (data: ChangePasswordFormData) => {
     try {
-      setSuccess("");
+      const response = await changePassword(
+        data.oldPassword,
+        data.newPassword
+      );
 
-      const response =
-        await changePassword(
-          data.oldPassword,
-          data.newPassword
-        );
-
-      setSuccess(response.message);
-
+      toast.success(response.message || "Password changed successfully");
       reset();
-    } catch (error) {
-      console.error(error);
+    } catch (err: unknown) {
+      toast.error(getApiErrorMessage(err, "Failed to change password"));
     }
   };
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="space-y-4"
+      className="mx-auto w-full max-w-md space-y-4"
+      noValidate
     >
       <div className="space-y-2">
         <Label htmlFor="oldPassword">Current Password</Label>
@@ -67,9 +52,9 @@ export default function ChangePasswordForm() {
           id="oldPassword"
           type="password"
           placeholder="Enter your current password"
-          {...register(
-            "oldPassword"
-          )}
+          disabled={loading}
+          autoComplete="current-password"
+          {...register("oldPassword")}
         />
         {errors.oldPassword && (
           <p className="text-sm text-destructive">
@@ -84,9 +69,9 @@ export default function ChangePasswordForm() {
           id="newPassword"
           type="password"
           placeholder="Enter your new password"
-          {...register(
-            "newPassword"
-          )}
+          disabled={loading}
+          autoComplete="new-password"
+          {...register("newPassword")}
         />
         {errors.newPassword && (
           <p className="text-sm text-destructive">
@@ -101,40 +86,19 @@ export default function ChangePasswordForm() {
           id="confirmPassword"
           type="password"
           placeholder="Confirm your new password"
-          {...register(
-            "confirmPassword"
-          )}
+          disabled={loading}
+          autoComplete="new-password"
+          {...register("confirmPassword")}
         />
         {errors.confirmPassword && (
           <p className="text-sm text-destructive">
-            {
-              errors.confirmPassword
-                .message
-            }
+            {errors.confirmPassword.message}
           </p>
         )}
       </div>
 
-      {error && (
-        <p className="text-destructive">
-          {error}
-        </p>
-      )}
-
-      {success && (
-        <p className="text-green-600">
-          {success}
-        </p>
-      )}
-
-      <Button
-        type="submit"
-        disabled={loading}
-        className="w-full"
-      >
-        {loading
-          ? "Updating..."
-          : "Change Password"}
+      <Button type="submit" disabled={loading} className="w-full">
+        {loading ? "Saving password..." : "Change Password"}
       </Button>
     </form>
   );

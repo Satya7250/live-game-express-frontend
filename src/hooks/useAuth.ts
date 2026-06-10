@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import * as authService from "@/services/auth";
+import { setAccessToken, clearAccessToken } from "@/lib/token";
 import { useAuthStore } from "@/store/auth.store";
 
 import type {
@@ -34,6 +35,10 @@ export const useAuth = () => {
 
       if (response?.data?.user) {
         setUser(response.data.user);
+      }
+
+      if (response?.data?.accessToken) {
+        setAccessToken(response.data.accessToken);
       }
 
       return response;
@@ -141,6 +146,7 @@ export const useAuth = () => {
     try {
       await authService.logout();
     } finally {
+      clearAccessToken();
       clearAuth();
     }
   };

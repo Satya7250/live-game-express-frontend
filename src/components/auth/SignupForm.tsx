@@ -1,10 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { isAxiosError } from "axios";
+import { toast } from "sonner";
 
 import {
   signupSchema,
@@ -12,6 +16,7 @@ import {
 } from "@/schemas/signup.schema";
 
 import { useAuth } from "@/hooks/useAuth";
+import AvatarUpload from "./avatar-upload";
 
 const LEAVES = [
   "/leaf_01.png",
@@ -25,16 +30,28 @@ const LEAVES = [
 ];
 
 export default function SignupForm() {
-  const { signup, loading, error } = useAuth();
+  const router = useRouter();
+  const { signup, loading: authLoading, error } = useAuth();
+
+  const [imageUploading, setImageUploading] = useState(false);
 
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
   } = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
       role: "player",
+      avatar: "",
+      phone: "",
+      address: "",
+      bio: "",
     },
   });
 
@@ -42,21 +59,42 @@ export default function SignupForm() {
     data: SignupFormData
   ) => {
     try {
-      const response = await signup(data);
+      const { confirmPassword, ...signupData } = data;
 
-      console.log("Signup Success", response);
+      const response = await signup(signupData);
 
-      // router.push("/login");
-    } catch (error) {
-      console.error(error);
+      toast.success(
+        response.message ||
+          "Account created! Check your email to verify your account before logging in."
+      );
+
+      setTimeout(() => {
+        router.push("/login");
+      }, 2000);
+    } catch (err: unknown) {
+      toast.error(
+        isAxiosError(err)
+          ? (err.response?.data as { message?: string })?.message ||
+              "Registration failed. Please try again."
+          : "Registration failed. Please try again."
+      );
     }
   };
+
+  const buttonText = imageUploading
+    ? "Uploading Image..."
+    : authLoading
+    ? "Creating Account..."
+    : "Sign Up";
+
+  const isSubmitting =
+    imageUploading || authLoading;
 
   return (
     <section className="hero">
       <Image
         src="/bg.jpg"
-        alt="background"
+        alt="Background"
         fill
         priority
         className="bg"
@@ -106,6 +144,27 @@ export default function SignupForm() {
         <h2>Sign Up</h2>
 
         <form onSubmit={handleSubmit(onSubmit)}>
+          {/* Avatar Upload */}
+          <div className="mb-6">
+            <Controller
+              name="avatar"
+              control={control}
+              render={({ field }) => (
+                <AvatarUpload
+                  value={field.value}
+                  onChange={field.onChange}
+                  onUploading={setImageUploading}
+                />
+              )}
+            />
+
+            {errors.avatar && (
+              <p className="mt-2 text-center text-sm text-red-500">
+                {errors.avatar.message}
+              </p>
+            )}
+          </div>
+
           <div className="form-grid">
             <div className="inputBox">
               <input
@@ -113,8 +172,9 @@ export default function SignupForm() {
                 placeholder="Full Name"
                 {...register("name")}
               />
+
               {errors.name && (
-                <p className="text-red-500 text-sm">
+                <p className="text-sm text-red-500">
                   {errors.name.message}
                 </p>
               )}
@@ -126,8 +186,9 @@ export default function SignupForm() {
                 placeholder="Email Address"
                 {...register("email")}
               />
+
               {errors.email && (
-                <p className="text-red-500 text-sm">
+                <p className="text-sm text-red-500">
                   {errors.email.message}
                 </p>
               )}
@@ -150,14 +211,40 @@ export default function SignupForm() {
                 placeholder="Phone Number (optional)"
                 {...register("phone")}
               />
+
+              {errors.phone && (
+                <p className="text-sm text-red-500">
+                  {errors.phone.message}
+                </p>
+              )}
             </div>
 
             <div className="inputBox">
               <input
-                type="text"
-                placeholder="Avatar URL (optional)"
-                {...register("avatar")}
+                type="password"
+                placeholder="Password"
+                {...register("password")}
               />
+
+              {errors.password && (
+                <p className="text-sm text-red-500">
+                  {errors.password.message}
+                </p>
+              )}
+            </div>
+
+            <div className="inputBox">
+              <input
+                type="password"
+                placeholder="Confirm Password"
+                {...register("confirmPassword")}
+              />
+
+              {errors.confirmPassword && (
+                <p className="text-sm text-red-500">
+                  {errors.confirmPassword.message}
+                </p>
+              )}
             </div>
 
             <div className="inputBox">
@@ -166,8 +253,9 @@ export default function SignupForm() {
                 placeholder="Address (optional)"
                 {...register("address")}
               />
+
               {errors.address && (
-                <p className="text-red-500 text-sm">
+                <p className="text-sm text-red-500">
                   {errors.address.message}
                 </p>
               )}
@@ -179,29 +267,17 @@ export default function SignupForm() {
                 placeholder="Bio (optional)"
                 {...register("bio")}
               />
-              {errors.bio && (
-                <p className="text-red-500 text-sm">
-                  {errors.bio.message}
-                </p>
-              )}
-            </div>
 
-            <div className="inputBox">
-              <input
-                type="password"
-                placeholder="Password"
-                {...register("password")}
-              />
-              {errors.password && (
-                <p className="text-red-500 text-sm">
-                  {errors.password.message}
+              {errors.bio && (
+                <p className="text-sm text-red-500">
+                  {errors.bio.message}
                 </p>
               )}
             </div>
           </div>
 
           {error && (
-            <p className="text-red-500 text-sm mt-3">
+            <p className="mt-3 text-sm text-red-500">
               {error}
             </p>
           )}
@@ -210,11 +286,9 @@ export default function SignupForm() {
             <button
               type="submit"
               id="btn"
-              disabled={loading}
+              disabled={isSubmitting}
             >
-              {loading
-                ? "Creating Account..."
-                : "Signup"}
+              {buttonText}
             </button>
           </div>
         </form>

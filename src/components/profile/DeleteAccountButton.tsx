@@ -3,20 +3,32 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Trash2 } from "lucide-react";
-
-import { deleteAccountSchema, type DeleteAccountFormData } from "@/schemas/profile.schema";
-import * as userService from "@/services/user";
-import { useAuthStore } from "@/store/auth.store";
 import { useRouter } from "next/navigation";
+import { Trash2 } from "lucide-react";
+import { toast } from "sonner";
+
+import {
+  deleteAccountSchema,
+  type DeleteAccountFormData,
+} from "@/schemas/profile.schema";
+import { getApiErrorMessage } from "@/lib/api-error";
+import * as userService from "@/services/user";
+import { logout as logoutApi } from "@/services/auth";
+import { useAuthStore } from "@/store/auth.store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export default function DeleteAccountButton() {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const router = useRouter();
   const logout = useAuthStore((state) => state.logout);
 
@@ -32,52 +44,61 @@ export default function DeleteAccountButton() {
   const onSubmit = async (data: DeleteAccountFormData) => {
     try {
       setLoading(true);
-      setError("");
 
-      await userService.deleteAccount(data);
-      
-      // Log the user out and redirect to home
+      const response = await userService.deleteAccount(data);
+
+      try {
+        await logoutApi();
+      } catch {
+        // Session may already be invalidated after account deletion.
+      }
+
       logout();
-      router.push("/");
-    } catch (err: any) {
-      setError(err?.response?.data?.message || "Account deletion failed");
+      toast.success(response.message || "Account deleted successfully");
+      router.replace("/login");
+    } catch (err: unknown) {
+      toast.error(getApiErrorMessage(err, "Account deletion failed"));
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Card className="border-destructive">
+    <Card className="border-destructive/40">
       <CardHeader className="space-y-1">
         <CardTitle className="text-destructive">Delete Account</CardTitle>
         <CardDescription>
           Once you delete your account, there is no going back. Please be certain.
         </CardDescription>
       </CardHeader>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <CardContent className="space-y-6">
+      <form onSubmit={handleSubmit(onSubmit)} noValidate>
+        <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="delete-password">Enter your password to confirm</Label>
+            <Label htmlFor="delete-password">
+              Enter your password to confirm
+            </Label>
             <Input
               id="delete-password"
               type="password"
               placeholder="Enter your password"
+              disabled={loading}
+              autoComplete="current-password"
               {...register("password")}
             />
             {errors.password && (
-              <p className="text-sm text-destructive">{errors.password.message}</p>
+              <p className="text-sm text-destructive">
+                {errors.password.message}
+              </p>
             )}
           </div>
-
-          {error && (
-            <p className="text-sm text-destructive">{error}</p>
-          )}
         </CardContent>
-        <CardFooter className="flex justify-end gap-3 pt-6">
+        <CardFooter className="flex flex-col-reverse gap-3 pt-6 sm:flex-row sm:justify-end">
           <Button
             type="button"
             variant="secondary"
+            disabled={loading}
             onClick={() => reset()}
+            className="w-full sm:w-auto"
           >
             Cancel
           </Button>
@@ -85,10 +106,10 @@ export default function DeleteAccountButton() {
             type="submit"
             variant="destructive"
             disabled={loading}
-            className="gap-2"
+            className="w-full gap-2 sm:w-auto"
           >
             <Trash2 className="size-4" />
-            {loading ? "Deleting..." : "Delete Account"}
+            {loading ? "Deleting account..." : "Delete Account"}
           </Button>
         </CardFooter>
       </form>

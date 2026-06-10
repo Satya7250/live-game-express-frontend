@@ -1,42 +1,50 @@
 import { z } from "zod";
 
-export const signupSchema = z.object({
-  name: z
-    .string()
-    .min(2, "Name must be at least 2 characters")
-    .max(50, "Name cannot exceed 50 characters"),
+export const signupSchema = z
+  .object({
+    name: z
+      .string()
+      .min(2, "Name must be at least 2 characters")
+      .max(50, "Name cannot exceed 50 characters"),
 
-  email: z
-    .string()
-    .email("Please enter a valid email")
-    .transform((email) => email.toLowerCase()),
+    email: z
+      .string()
+      .email("Please enter a valid email")
+      .transform((email) => email.toLowerCase()),
 
-  password: z
-    .string()
-    .min(
-      8,
-      "Password must contain at least 8 characters"
-    ),
+    password: z
+      .string()
+      .min(
+        8,
+        "Password must contain at least 8 characters"
+      ),
 
-  role: z.enum([
-    "player",
-    "developer",
-  ]),
+    confirmPassword: z
+      .string()
+      .min(
+        8,
+        "Password must contain at least 8 characters"
+      ),
 
-  phone: z.string().optional(),
+    role: z.enum(["player", "developer"]),
 
-  avatar: z.string().optional(),
+    phone: z.string().optional(),
 
-  address: z
-    .string()
-    .max(100)
-    .optional(),
+    avatar: z
+      .string()
+      .url("Please upload a valid profile image")
+      .min(1, "Profile image is required"),
 
-  bio: z
-    .string()
-    .max(100)
-    .optional(),
-});
+    address: z.string().max(100).optional(),
 
-export type SignupFormData =
-  z.infer<typeof signupSchema>;
+    bio: z.string().max(100).optional(),
+  })
+  .refine(
+    (data) => data.password === data.confirmPassword,
+    {
+      message: "Passwords do not match",
+      path: ["confirmPassword"],
+    }
+  );
+
+export type SignupFormData = z.infer<typeof signupSchema>;

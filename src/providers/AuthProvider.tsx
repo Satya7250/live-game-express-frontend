@@ -2,37 +2,48 @@
 
 import { useEffect } from "react";
 
-import { getMe } from "@/services/auth";
+import { getMe, refreshToken } from "@/services/auth";
 import { useAuthStore } from "@/store/auth.store";
+import {
+  getCachedAccessToken,
+  setAccessToken,
+  clearAccessToken,
+} from "@/lib/token";
 
 interface Props {
   children: React.ReactNode;
 }
 
-export default function AuthProvider({
-  children,
-}: Props) {
-  const setUser = useAuthStore(
-    (state) => state.setUser
-  );
+export default function AuthProvider({ children }: Props) {
+  const setUser = useAuthStore((state) => state.setUser);
 
   useEffect(() => {
-    const initializeAuth =
-      async () => {
-        try {
-          const response =
-            await getMe();
-
+    const initializeAuth = async () => {
+      try {
+        if (!getCachedAccessToken()) {
+          const refreshResponse = await refreshToken();
           if (
-            response.success &&
-            response.data
+            refreshResponse.success &&
+            refreshResponse.data &&
+            refreshResponse.data.accessToken
           ) {
-            setUser(response.data);
+            setAccessToken(refreshResponse.data.accessToken);
+            if (refreshResponse.data.user) {
+              setUser(refreshResponse.data.user);
+              return;
+            }
           }
-        } catch (error) {
-          setUser(null);
         }
-      };
+
+        const meResponse = await getMe();
+        if (meResponse.success && meResponse.data) {
+          setUser(meResponse.data);
+        }
+      } catch (error) {
+        clearAccessToken();
+        setUser(null);
+      }
+    };
 
     initializeAuth();
   }, [setUser]);

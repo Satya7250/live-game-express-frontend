@@ -70,10 +70,20 @@ export const getMe = async (): Promise<ApiResponse<User>> => {
   return data;
 };
 
-export const refreshToken = async () => {
-  const { data } = await api.post(
-    "/auth/refresh-token"
-  );
+export const refreshToken = async (): Promise<
+  ApiResponse<{
+    user: User;
+    accessToken: string;
+    refreshToken: string;
+  }>
+> => {
+  const { data } = await api.post<
+    ApiResponse<{
+      user: User;
+      accessToken: string;
+      refreshToken: string;
+    }>
+  >("/auth/refresh-token");
 
   return data;
 };
@@ -91,3 +101,13 @@ export const changePassword =
 
     return data;
   };
+
+export const verifyEmail = async (
+  token: string
+): Promise<ApiResponse> => {
+  const { data } = await api.post<ApiResponse>(
+    `/auth/verify-email/${token}`
+  );
+
+  return data;
+};

@@ -1,110 +1,158 @@
 "use client";
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { User } from "lucide-react";
+import { toast } from "sonner";
 
-import { profileSchema, type ProfileFormData } from "@/schemas/profile.schema";
-import * as userService from "@/services/user";
+import { getApiErrorMessage } from "@/lib/api-error";
+import {
+  profileSchema,
+  type ProfileFormData,
+} from "@/schemas/profile.schema";
+import AvatarUpload from "@/components/auth/avatar-upload";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 
-interface Props {
-  defaultValues?: ProfileFormData;
+interface ProfileFormProps {
+  defaultValues: ProfileFormData;
+  onSubmit: (data: ProfileFormData) => Promise<{ message: string }>;
   onSuccess?: () => void;
 }
 
-export default function ProfileForm({ defaultValues, onSuccess }: Props) {
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState("");
-  const [error, setError] = useState("");
+export default function ProfileForm({
+  defaultValues,
+  onSubmit,
+  onSuccess,
+}: ProfileFormProps) {
+  const [saving, setSaving] = useState(false);
+  const [imageUploading, setImageUploading] = useState(false);
 
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
   } = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
     defaultValues,
   });
 
-  const onSubmit = async (data: ProfileFormData) => {
+  const isSubmitting = saving || imageUploading;
+
+  const handleFormSubmit = async (data: ProfileFormData) => {
+    if (imageUploading) {
+      toast.error("Please wait for the image upload to finish.");
+      return;
+    }
+
     try {
-      setLoading(true);
-      setError("");
-      setSuccess("");
+      setSaving(true);
 
-      const response = await userService.updateProfile(data);
-      setSuccess(response.message);
+      const response = await onSubmit(data);
 
-      if (onSuccess) {
-        setTimeout(() => {
-          onSuccess();
-        }, 1500);
-      }
-    } catch (err: any) {
-      setError(err?.response?.data?.message || "Profile update failed");
+      toast.success(response.message || "Profile updated successfully");
+      onSuccess?.();
+    } catch (err: unknown) {
+      toast.error(getApiErrorMessage(err, "Failed to update profile"));
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div className="flex items-center gap-4">
-        <Avatar className="h-20 w-20">
-          <AvatarImage src={defaultValues?.avatar} />
-          <AvatarFallback className="bg-gradient-to-r from-violet-600 to-pink-500 text-white text-2xl">
-            {defaultValues?.name?.charAt(0)?.toUpperCase() || "U"}
-          </AvatarFallback>
-        </Avatar>
-        <div className="space-y-1">
-          <h3 className="text-lg font-semibold">{defaultValues?.name || "User"}</h3>
-        </div>
+    <form
+      onSubmit={handleSubmit(handleFormSubmit)}
+      className="space-y-4"
+      noValidate
+    >
+      <div className="flex justify-center">
+        <Controller
+          name="avatar"
+          control={control}
+          render={({ field }) => (
+            <AvatarUpload
+              value={field.value}
+              onChange={field.onChange}
+              onUploading={setImageUploading}
+            />
+          )}
+        />
       </div>
+
+      {errors.avatar && (
+        <p className="text-center text-sm text-destructive">
+          {errors.avatar.message}
+        </p>
+      )}
 
       <Separator />
 
       <div className="space-y-3">
         <div className="space-y-2">
-          <Label htmlFor="name">Name</Label>
-          <Input id="name" placeholder="Enter your name" {...register("name")} />
-          {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
+          <Label htmlFor="profile-name">Name</Label>
+          <Input
+            id="profile-name"
+            placeholder="Enter your name"
+            disabled={isSubmitting}
+            {...register("name")}
+          />
+          {errors.name && (
+            <p className="text-sm text-destructive">{errors.name.message}</p>
+          )}
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="phone">Phone</Label>
-          <Input id="phone" placeholder="Enter your phone number" {...register("phone")} />
-          {errors.phone && <p className="text-sm text-destructive">{errors.phone.message}</p>}
+          <Label htmlFor="profile-phone">Phone</Label>
+          <Input
+            id="profile-phone"
+            type="tel"
+            placeholder="Enter your phone number"
+            disabled={isSubmitting}
+            {...register("phone")}
+          />
+          {errors.phone && (
+            <p className="text-sm text-destructive">{errors.phone.message}</p>
+          )}
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="avatar">Avatar URL</Label>
-          <Input id="avatar" placeholder="Enter avatar URL" {...register("avatar")} />
+          <Label htmlFor="profile-address">Address</Label>
+          <Input
+            id="profile-address"
+            placeholder="Enter your address"
+            disabled={isSubmitting}
+            {...register("address")}
+          />
+          {errors.address && (
+            <p className="text-sm text-destructive">{errors.address.message}</p>
+          )}
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="address">Address</Label>
-          <Input id="address" placeholder="Enter your address" {...register("address")} />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="bio">Bio</Label>
-          <Textarea id="bio" placeholder="Tell us about yourself" {...register("bio")} rows={3} />
+          <Label htmlFor="profile-bio">Bio</Label>
+          <Textarea
+            id="profile-bio"
+            placeholder="Tell us about yourself"
+            rows={3}
+            disabled={isSubmitting}
+            {...register("bio")}
+          />
+          {errors.bio && (
+            <p className="text-sm text-destructive">{errors.bio.message}</p>
+          )}
         </div>
       </div>
 
-      {error && <p className="text-sm text-destructive">{error}</p>}
-      {success && <p className="text-sm text-green-600">{success}</p>}
-
-      <Button type="submit" disabled={loading} className="w-full">
-        {loading ? "Updating..." : "Update Profile"}
+      <Button type="submit" disabled={isSubmitting} className="w-full">
+        {imageUploading
+          ? "Uploading image..."
+          : saving
+            ? "Saving profile..."
+            : "Save Changes"}
       </Button>
     </form>
   );
