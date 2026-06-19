@@ -36,6 +36,11 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: "auth-storage",
+      // Only persist the auth flag — never PII (email, phone, address, bio)
+      // User data is re-fetched from the API on every cold start via AuthProvider
+      partialize: (state) => ({
+        isAuthenticated: state.isAuthenticated,
+      }),
     }
   )
-);
+);

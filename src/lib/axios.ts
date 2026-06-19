@@ -3,7 +3,6 @@ import axios, {
   InternalAxiosRequestConfig,
 } from "axios";
 
-import { useAuthStore } from "@/store/auth.store";
 import {
   getCachedAccessToken,
   setAccessToken,
@@ -13,6 +12,7 @@ import {
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   withCredentials: true,
+  timeout: 10_000, // 10 seconds — prevents infinite hangs when backend is down
   headers: {
     "Content-Type": "application/json",
   },
@@ -25,9 +25,7 @@ let failedQueue: Array<{
   reject: (reason?: unknown) => void;
 }> = [];
 
-const processQueue = (
-  error: unknown
-) => {
+const processQueue = (error: unknown) => {
   failedQueue.forEach((promise) => {
     if (error) {
       promise.reject(error);
@@ -57,7 +55,7 @@ const isAuthPage = () => {
   );
 };
 
-// Request interceptor: add access token to headers
+// Request interceptor: attach access token to Authorization header
 api.interceptors.request.use(
   (config) => {
     const token = getCachedAccessToken();
@@ -80,32 +78,23 @@ api.interceptors.response.use(
 
     if (
       error.response?.status === 401 &&
-      !originalRequest._retry
+      !originalRequest._retry &&
+      originalRequest.url !== "/auth/refresh-token"
     ) {
       if (isRefreshing) {
-        return new Promise<void>(
-          (resolve, reject) => {
-            failedQueue.push({
-              resolve,
-              reject,
-            });
-          }
-        )
+        return new Promise<void>((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        })
           .then(() => api(originalRequest))
-          .catch((err) =>
-            Promise.reject(err)
-          );
+          .catch((err) => Promise.reject(err));
       }
 
       originalRequest._retry = true;
       isRefreshing = true;
 
       try {
-        const refreshResponse = await api.post(
-          "/auth/refresh-token"
-        );
+        const refreshResponse = await api.post("/auth/refresh-token");
 
-        // Save the new access token
         if (
           refreshResponse.data?.success &&
           refreshResponse.data?.data?.accessToken
@@ -120,24 +109,19 @@ api.interceptors.response.use(
         processQueue(refreshError);
         clearAccessToken();
 
-        const { logout } =
-          useAuthStore.getState();
+        // Dispatch a custom event so the React tree can handle logout cleanly,
+        // avoiding the Zustand-outside-React lifecycle race condition.
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new CustomEvent("auth:session-expired"));
 
-        logout();
-
-        if (
-          typeof window !==
-            "undefined" &&
-          !isAuthPage()
-        ) {
-          window.location.href =
-            "/login";
+          if (!isAuthPage()) {
+            window.location.href = "/login";
+          }
         }
 
-        return Promise.reject(
-          refreshError
-        );
+        return Promise.reject(refreshError);
       } finally {
+        // Always reset the flag — even if an unexpected error occurs
         isRefreshing = false;
       }
     }
@@ -146,4 +130,4 @@ api.interceptors.response.use(
   }
 );
 
-export default api;
+export default api;

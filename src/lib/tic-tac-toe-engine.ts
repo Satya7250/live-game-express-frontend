@@ -1,4 +1,9 @@
-import type { TicTacToeCell, TicTacToeGame } from "@/types/tic-tac-toe";
+import type {
+  TicTacToeCell,
+  TicTacToeGame,
+  TicTacToeMoveRecord,
+  TicTacToeSymbol,
+} from "@/types/tic-tac-toe";
 
 const WINNING_LINES = [
   [0, 1, 2],
@@ -116,4 +121,29 @@ export function makeMove(
 
 export function restartGame(gameState: TicTacToeGame): TicTacToeGame {
   return createGame(gameState.players);
+}
+
+export function extractMove(
+  previousBoard: TicTacToeGame["board"],
+  nextBoard: TicTacToeGame["board"],
+  game: TicTacToeGame
+): TicTacToeMoveRecord | null {
+  for (let index = 0; index < nextBoard.length; index += 1) {
+    if (previousBoard[index] === null && nextBoard[index] !== null) {
+      const symbol = nextBoard[index] as TicTacToeSymbol;
+      const playerId =
+        Object.entries(game.symbols).find(
+          ([, value]) => value === symbol
+        )?.[0] ?? "";
+
+      return {
+        position: index,
+        symbol,
+        playerId,
+        timestamp: Date.now(),
+      };
+    }
+  }
+
+  return null;
 }

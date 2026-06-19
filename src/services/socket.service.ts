@@ -5,6 +5,9 @@ import {
   getConnectionStatus,
   getSocket,
   subscribeToConnectionStatus,
+  hasJoinedRoom,
+  addJoinedRoom,
+  deleteJoinedRoom,
 } from "@/lib/socket";
 import type { CreateRoomDto } from "@/types/room";
 import type {
@@ -18,7 +21,7 @@ import type {
   TicTacToeStartPayload,
 } from "@/types/socket";
 
-const joinedRoomCodes = new Set<string>();
+// Rooms are tracked globally in @/lib/socket
 
 export {
   connectSocket,
@@ -37,19 +40,19 @@ export function createRoom(data: CreateRoomDto): void {
 }
 
 export function joinRoomSocket(data: RoomJoinPayload): void {
-  if (joinedRoomCodes.has(data.roomCode)) {
+  if (hasJoinedRoom(data.roomCode)) {
     return;
   }
   emitSocketEvent("room:join", data);
-  joinedRoomCodes.add(data.roomCode);
+  addJoinedRoom(data.roomCode);
 }
 
 export function leaveRoomSocket(data: RoomLeavePayload): void {
-  if (!joinedRoomCodes.has(data.roomCode)) {
+  if (!hasJoinedRoom(data.roomCode)) {
     return;
   }
   emitSocketEvent("room:leave", data);
-  joinedRoomCodes.delete(data.roomCode);
+  deleteJoinedRoom(data.roomCode);
 }
 
 export function startRoomSocket(data: RoomStartPayload): void {

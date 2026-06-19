@@ -15,6 +15,23 @@ let connectionStatus: SocketConnectionStatus = "disconnected";
 let connectPromise: Promise<AppSocket> | null = null;
 
 const statusListeners = new Set<StatusListener>();
+const joinedRoomCodes = new Set<string>();
+
+export function hasJoinedRoom(roomCode: string): boolean {
+  return joinedRoomCodes.has(roomCode);
+}
+
+export function addJoinedRoom(roomCode: string): void {
+  joinedRoomCodes.add(roomCode);
+}
+
+export function deleteJoinedRoom(roomCode: string): void {
+  joinedRoomCodes.delete(roomCode);
+}
+
+export function clearJoinedRooms(): void {
+  joinedRoomCodes.clear();
+}
 
 function getSocketUrl(): string {
   const rawUrl = (
@@ -128,9 +145,9 @@ export async function connectSocket(): Promise<AppSocket> {
       socket = io(socketUrl, {
         autoConnect: false,
         reconnection: true,
-        reconnectionAttempts: Infinity,
+        reconnectionAttempts: 10,
         reconnectionDelay: 1000,
-        reconnectionDelayMax: 5000,
+        reconnectionDelayMax: 30000,
         withCredentials: true,
         auth: { token },
         transports: ["websocket", "polling"],
@@ -200,6 +217,7 @@ export async function connectSocket(): Promise<AppSocket> {
 }
 
 export function disconnectSocket(): void {
+  clearJoinedRooms();
   if (!socket) {
     return;
   }

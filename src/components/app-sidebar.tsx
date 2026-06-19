@@ -24,11 +24,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     name: user.name,
     email: user.email,
     avatar: user.avatar || "",
-  } : {
-    name: "User",
-    email: "user@example.com",
-    avatar: "",
-  }
+  } : null
 
   return (
     <Sidebar collapsible="offcanvas" {...props}>

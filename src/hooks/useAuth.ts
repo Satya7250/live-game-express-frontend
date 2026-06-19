@@ -5,6 +5,7 @@ import { useState } from "react";
 import * as authService from "@/services/auth";
 import { setAccessToken, clearAccessToken } from "@/lib/token";
 import { useAuthStore } from "@/store/auth.store";
+import { getApiErrorMessage } from "@/lib/api-error";
 
 import type {
   LoginDto,
@@ -42,11 +43,8 @@ export const useAuth = () => {
       }
 
       return response;
-    } catch (err: any) {
-      setError(
-        err?.response?.data?.message ||
-        "Login failed"
-      );
+    } catch (err: unknown) {
+      setError(getApiErrorMessage(err, "Login failed"));
       throw err;
     } finally {
       setLoading(false);
@@ -61,11 +59,8 @@ export const useAuth = () => {
       setError(null);
 
       return await authService.register(data);
-    } catch (err: any) {
-      setError(
-        err?.response?.data?.message ||
-        "Signup failed"
-      );
+    } catch (err: unknown) {
+      setError(getApiErrorMessage(err, "Signup failed"));
       throw err;
     } finally {
       setLoading(false);
@@ -82,11 +77,8 @@ export const useAuth = () => {
       return await authService.forgotPassword(
         data
       );
-    } catch (err: any) {
-      setError(
-        err?.response?.data?.message ||
-        "Request failed"
-      );
+    } catch (err: unknown) {
+      setError(getApiErrorMessage(err, "Request failed"));
       throw err;
     } finally {
       setLoading(false);
@@ -105,11 +97,8 @@ export const useAuth = () => {
         token,
         data
       );
-    } catch (err: any) {
-      setError(
-        err?.response?.data?.message ||
-        "Reset failed"
-      );
+    } catch (err: unknown) {
+      setError(getApiErrorMessage(err, "Reset failed"));
       throw err;
     } finally {
       setLoading(false);
@@ -117,30 +106,24 @@ export const useAuth = () => {
   };
 
   const changePassword = async (
-  oldPassword: string,
-  newPassword: string
-) => {
-  try {
-    setLoading(true);
-    setError(null);
+    oldPassword: string,
+    newPassword: string
+  ) => {
+    try {
+      setLoading(true);
+      setError(null);
 
-    return await authService.changePassword(
-      {
+      return await authService.changePassword({
         oldPassword,
         newPassword,
-      }
-    );
-  } catch (err: any) {
-    setError(
-      err?.response?.data?.message ||
-        "Password change failed"
-    );
-
-    throw err;
-  } finally {
-    setLoading(false);
-  }
-};
+      });
+    } catch (err: unknown) {
+      setError(getApiErrorMessage(err, "Password change failed"));
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const logout = async () => {
     try {

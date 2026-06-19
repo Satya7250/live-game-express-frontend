@@ -42,7 +42,6 @@ export function useSocket() {
   }, [isAuthenticated]);
 
   const disconnect = useCallback(() => {
-    clearAccessToken();
     disconnectSocket();
   }, []);
 
@@ -60,6 +59,7 @@ export function useSocket() {
     error,
     isConnected: status === "connected",
     isReconnecting: status === "reconnecting",
+    isExhausted: status === "error",
     connect,
     disconnect,
   };

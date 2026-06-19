@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useCallback } from "react";
+import { memo } from "react";
 
 import GameCell from "@/components/game/GameCell";
 import type { TicTacToeCell } from "@/types/tic-tac-toe";
@@ -20,13 +20,6 @@ function GameBoardComponent({
   disabled = false,
   onCellClick,
 }: GameBoardProps) {
-  const handleCellClick = useCallback(
-    (index: number) => {
-      onCellClick?.(index);
-    },
-    [onCellClick]
-  );
-
   return (
     <div className="mx-auto grid w-full max-w-sm grid-cols-3 gap-2 sm:max-w-md sm:gap-3">
       {board.map((cell, index) => (
@@ -37,7 +30,7 @@ function GameBoardComponent({
           disabled={disabled}
           isWinning={winningLine?.includes(index) ?? false}
           isLastMove={lastMovePosition === index}
-          onClick={handleCellClick}
+          onClick={onCellClick}
         />
       ))}
     </div>

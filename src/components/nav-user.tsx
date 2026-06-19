@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/sidebar"
 import { EllipsisVerticalIcon, CircleUserRoundIcon, BellIcon, LogOutIcon } from "lucide-react"
 import { useAuthStore } from "@/store/auth.store"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export function NavUser({
   user,
@@ -31,7 +32,7 @@ export function NavUser({
     name: string
     email: string
     avatar: string
-  }
+  } | null
 }) {
   const { isMobile } = useSidebar()
   const logout = useAuthStore((state) => state.logout)
@@ -40,6 +41,22 @@ export function NavUser({
   const handleLogout = () => {
     logout()
     router.push("/login")
+  }
+
+  if (!user) {
+    return (
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <div className="flex items-center gap-2 px-2 py-1.5">
+            <Skeleton className="h-8 w-8 rounded-lg" />
+            <div className="space-y-1.5 flex-1">
+              <Skeleton className="h-3 w-20" />
+              <Skeleton className="h-2.5 w-32" />
+            </div>
+          </div>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    )
   }
 
   return (

@@ -9,6 +9,7 @@ import {
   LOCAL_PLAYER_TWO_ID,
   makeMove,
   restartGame,
+  extractMove,
 } from "@/lib/tic-tac-toe-engine";
 import type { RoomPlayer } from "@/types/room";
 import type {
@@ -27,29 +28,7 @@ const DEFAULT_NAMES: LocalPlayerNames = {
   [LOCAL_PLAYER_TWO_ID]: "Player 2",
 };
 
-function extractMove(
-  previousBoard: TicTacToeGame["board"],
-  nextBoard: TicTacToeGame["board"],
-  game: TicTacToeGame
-): TicTacToeMoveRecord | null {
-  for (let index = 0; index < nextBoard.length; index += 1) {
-    if (previousBoard[index] === null && nextBoard[index] !== null) {
-      const symbol = nextBoard[index] as TicTacToeSymbol;
-      const playerId =
-        Object.entries(game.symbols).find(([, value]) => value === symbol)?.[0] ??
-        "";
-
-      return {
-        position: index,
-        symbol,
-        playerId,
-        timestamp: Date.now(),
-      };
-    }
-  }
-
-  return null;
-}
+// extractMove imported from @/lib/tic-tac-toe-engine
 
 export function useLocalTicTacToe() {
   const [game, setGame] = useState<TicTacToeGame>(() => createLocalGame());

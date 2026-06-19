@@ -10,6 +10,7 @@ import {
   restartTicTacToe,
   startTicTacToe,
 } from "@/services/socket.service";
+import { extractMove } from "@/lib/tic-tac-toe-engine";
 import { useAuthStore } from "@/store/auth.store";
 import type {
   TicTacToeGame,
@@ -27,30 +28,7 @@ interface UseTicTacToeOptions {
   onGameEnded?: (reason: string) => void;
 }
 
-function extractMove(
-  previousBoard: TicTacToeGame["board"],
-  nextBoard: TicTacToeGame["board"],
-  game: TicTacToeGame
-): TicTacToeMoveRecord | null {
-  for (let index = 0; index < nextBoard.length; index += 1) {
-    if (previousBoard[index] === null && nextBoard[index] !== null) {
-      const symbol = nextBoard[index] as TicTacToeSymbol;
-      const playerId =
-        Object.entries(game.symbols).find(
-          ([, value]) => value === symbol
-        )?.[0] ?? "";
-
-      return {
-        position: index,
-        symbol,
-        playerId,
-        timestamp: Date.now(),
-      };
-    }
-  }
-
-  return null;
-}
+// extractMove imported from @/lib/tic-tac-toe-engine
 
 export function useTicTacToe({ roomCode, onGameEnded }: UseTicTacToeOptions) {
   const currentUserId = useAuthStore((state) => state.user?._id);

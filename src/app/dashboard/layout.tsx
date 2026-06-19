@@ -4,16 +4,17 @@ import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SiteHeader } from "@/components/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import SocketProvider from "@/providers/SocketProvider";
+import { useSocket } from "@/hooks/useSocket";
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  useSocket();
+
   return (
     <ProtectedRoute>
-      <SocketProvider>
       <SidebarProvider
         style={
           {
@@ -34,7 +35,6 @@ export default function DashboardLayout({
           </div>
         </SidebarInset>
       </SidebarProvider>
-      </SocketProvider>
     </ProtectedRoute>
   );
 }

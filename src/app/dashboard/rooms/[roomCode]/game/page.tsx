@@ -47,7 +47,7 @@ export default function TicTacToeGamePage({ params }: GamePageProps) {
   const { roomCode } = use(params);
   const router = useRouter();
   const currentUserId = useAuthStore((state) => state.user?._id);
-  const { status: socketStatus } = useSocket();
+  const { status: socketStatus, connect: reconnectSocket } = useSocket();
 
   const {
     room: fetchedRoom,
@@ -220,7 +220,7 @@ export default function TicTacToeGamePage({ params }: GamePageProps) {
               Room
             </Link>
           </Button>
-          <ConnectionStatus status={socketStatus} />
+          <ConnectionStatus status={socketStatus} onReconnect={() => void reconnectSocket()} />
         </div>
 
         <LeaveRoomButton

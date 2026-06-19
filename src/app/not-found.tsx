@@ -1,5 +1,5 @@
 import Link from "next/link";
-import NeonButton from "@/components/MyButton/NeonButton";
+import { Button } from "@/components/ui/button";
 
 export default function NotFound() {
   return (
@@ -29,7 +29,9 @@ export default function NotFound() {
             The page you're looking for doesn't exist or may have been moved.
           </p>
 
-          <NeonButton href="/">Back to Home</NeonButton>
+          <Button asChild className="mt-6">
+            <Link href="/">Back to Home</Link>
+          </Button>
         </div>
       </div>
     </main>

@@ -110,7 +110,6 @@ export default function SignupForm() {
                 aria-hidden="true"
                 width={80}
                 height={80}
-                priority
                 style={{
                   width: "auto",
                   height: "auto",
@@ -127,7 +126,6 @@ export default function SignupForm() {
         aria-hidden="true"
         width={500}
         height={500}
-        priority
         className="girl"
       />
 
@@ -136,7 +134,6 @@ export default function SignupForm() {
         alt=""
         aria-hidden="true"
         fill
-        priority
         className="trees"
       />
 
@@ -194,16 +191,7 @@ export default function SignupForm() {
               )}
             </div>
 
-            <div className="inputBox">
-              <select {...register("role")}>
-                <option value="player">
-                  Player
-                </option>
-                <option value="developer">
-                  Developer
-                </option>
-              </select>
-            </div>
+            {/* Role defaults to player in defaultValues, developer role hidden until features implemented */}
 
             <div className="inputBox">
               <input

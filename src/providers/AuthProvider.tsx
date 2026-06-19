@@ -2,11 +2,9 @@
 
 import { useEffect } from "react";
 
-import { getMe, refreshToken } from "@/services/auth";
+import { getMe } from "@/services/auth";
 import { useAuthStore } from "@/store/auth.store";
 import {
-  getCachedAccessToken,
-  setAccessToken,
   clearAccessToken,
 } from "@/lib/token";
 
@@ -20,21 +18,6 @@ export default function AuthProvider({ children }: Props) {
   useEffect(() => {
     const initializeAuth = async () => {
       try {
-        if (!getCachedAccessToken()) {
-          const refreshResponse = await refreshToken();
-          if (
-            refreshResponse.success &&
-            refreshResponse.data &&
-            refreshResponse.data.accessToken
-          ) {
-            setAccessToken(refreshResponse.data.accessToken);
-            if (refreshResponse.data.user) {
-              setUser(refreshResponse.data.user);
-              return;
-            }
-          }
-        }
-
         const meResponse = await getMe();
         if (meResponse.success && meResponse.data) {
           setUser(meResponse.data);
@@ -46,6 +29,18 @@ export default function AuthProvider({ children }: Props) {
     };
 
     initializeAuth();
+  }, [setUser]);
+
+  useEffect(() => {
+    const handleSessionExpired = () => {
+      clearAccessToken();
+      setUser(null);
+    };
+
+    window.addEventListener("auth:session-expired", handleSessionExpired);
+    return () => {
+      window.removeEventListener("auth:session-expired", handleSessionExpired);
+    };
   }, [setUser]);
 
   return <>{children}</>;
