@@ -1,6 +1,8 @@
 import type { CreateRoomDto, LeaveRoomDeletedResult, Room } from "@/types/room";
 import type { TicTacToeGame } from "@/types/tic-tac-toe";
 import type { FriendUser, IncomingFriendRequest, SentFriendRequest } from "@/types/friend";
+import type { Message } from "@/types/chat";
+import type { Notification } from "@/types/notification";
 
 export type SocketConnectionStatus =
   | "disconnected"
@@ -105,6 +107,11 @@ export interface ClientToServerEvents {
   "ttt:start": (data: TicTacToeStartPayload) => void;
   "ttt:move": (data: TicTacToeMovePayload) => void;
   "ttt:restart": (data: TicTacToeRestartPayload) => void;
+  // Chat events
+  "chat:join-conversation": (data: { conversationId: string }) => void;
+  "chat:send-message": (data: { conversationId: string; content: string }) => void;
+  "chat:typing": (data: { conversationId: string }) => void;
+  "chat:stop-typing": (data: { conversationId: string }) => void;
 }
 
 export interface ServerToClientEvents {
@@ -125,6 +132,16 @@ export interface ServerToClientEvents {
   "friend:requestRejected": (data: FriendRequestRejectedPayload) => void;
   "friend:requestCanceled": (data: FriendRequestCanceledPayload) => void;
   "friend:removed": (data: FriendRemovedPayload) => void;
+  // Chat events
+  "chat:new-message": (data: { message: Message }) => void;
+  "chat:typing": (data: { conversationId: string; userId: string }) => void;
+  "chat:stop-typing": (data: { conversationId: string; userId: string }) => void;
+  "chat:error": (data: SocketErrorPayload) => void;
+  // Notification events
+  "notification:new": (data: Notification) => void;
+  "notification:read": (data: Notification) => void;
+  "notification:all-read": () => void;
+  "notification:deleted": (data: { notificationId: string }) => void;
 }
 
 export type AppSocket = import("socket.io-client").Socket<
