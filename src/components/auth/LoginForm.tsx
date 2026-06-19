@@ -1,11 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 
 import {
   loginSchema,
@@ -27,6 +29,7 @@ const LEAVES = [
 
 export default function LoginForm() {
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
 
   const { login, loading, error } = useAuth();
 
@@ -64,18 +67,18 @@ export default function LoginForm() {
         <div className="set">
           {LEAVES.map((leaf, index) => (
             <div key={`${leaf}-${index}`}>
-              <Image
-                src={leaf}
-                alt=""
-                aria-hidden="true"
-                width={80}
-                height={80}
-                priority
-                style={{
-                  width: "auto",
-                  height: "auto",
-                }}
-              />
+               <Image
+                 src={leaf}
+                 alt=""
+                 aria-hidden="true"
+                 width={80}
+                 height={80}
+                 priority
+                 style={{
+                   width: "auto",
+                   height: "auto",
+                 }}
+               />
             </div>
           ))}
         </div>
@@ -100,7 +103,7 @@ export default function LoginForm() {
         className="trees"
       />
 
-      <div className="login">
+      <div className="login max-w-[90vw] sm:max-w-md w-full mx-auto">
         <h2>Sign In</h2>
 
         <form
@@ -121,12 +124,24 @@ export default function LoginForm() {
             )}
           </div>
 
-          <div className="inputBox">
+          <div className="inputBox relative">
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Password"
+              className="pr-10"
               {...register("password")}
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8f2c24] hover:text-[#d64c42] focus:outline-none cursor-pointer"
+            >
+              {showPassword ? (
+                <EyeOff className="size-4.5" />
+              ) : (
+                <Eye className="size-4.5" />
+              )}
+            </button>
 
             {errors.password && (
               <p className="text-red-500 text-sm mt-1">
@@ -146,7 +161,9 @@ export default function LoginForm() {
               type="submit"
               id="btn"
               disabled={loading}
+              className="flex items-center justify-center gap-2"
             >
+              {loading && <Loader2 className="size-4.5 animate-spin" />}
               {loading
                 ? "Logging in..."
                 : "Login"}

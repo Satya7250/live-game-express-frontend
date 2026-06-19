@@ -47,31 +47,31 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  --background: oklch(0.99 0.002 30);
+  --foreground: oklch(0.12 0.005 30);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: oklch(0.12 0.005 30);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.589 0.235 258.961);
+  --popover-foreground: oklch(0.12 0.005 30);
+  --primary: oklch(0.48 0.17 26.5);
   --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.21 0.036 265.552);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.21 0.036 265.552);
-  --destructive: oklch(0.637 0.207 25.331);
+  --secondary: oklch(0.96 0.005 30);
+  --secondary-foreground: oklch(0.12 0.005 30);
+  --muted: oklch(0.96 0.005 30);
+  --muted-foreground: oklch(0.55 0.015 30);
+  --accent: oklch(0.95 0.01 27);
+  --accent-foreground: oklch(0.12 0.005 30);
+  --destructive: oklch(0.58 0.18 26.5);
   --destructive-foreground: oklch(1 0 0);
-  --border: oklch(0.928 0.013 255.508);
-  --input: oklch(0.928 0.013 255.508);
-  --ring: oklch(0.589 0.235 258.961);
-  --chart-1: oklch(0.589 0.235 258.961);
-  --chart-2: oklch(0.554 0.236 304.566);
+  --border: rgba(143, 44, 36, 0.15);
+  --input: rgba(143, 44, 36, 0.04);
+  --ring: oklch(0.48 0.17 26.5);
+  --chart-1: oklch(0.48 0.17 26.5);
+  --chart-2: oklch(0.55 0.236 304.566);
   --chart-3: oklch(0.427 0.095 182.503);
   --chart-4: oklch(0.606 0.165 61.439);
-  --chart-5: oklch(0.637 0.207 25.331);
-  --radius: 0.625rem;
+  --chart-5: oklch(0.58 0.18 26.5);
+  --radius: 0.75rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
@@ -83,38 +83,38 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.748 0.24 277.023);
-  --primary-foreground: oklch(0.145 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.145 0 0);
-  --border: oklch(0.269 0 0);
-  --input: oklch(0.269 0 0);
-  --ring: oklch(0.748 0.24 277.023);
-  --chart-1: oklch(0.748 0.24 277.023);
+  --background: oklch(0.09 0.01 30);
+  --foreground: oklch(0.97 0.005 30);
+  --card: rgba(22, 18, 18, 0.4);
+  --card-foreground: oklch(0.97 0.005 30);
+  --popover: rgba(18, 14, 14, 0.95);
+  --popover-foreground: oklch(0.97 0.005 30);
+  --primary: oklch(0.55 0.22 27);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.18 0.025 25);
+  --secondary-foreground: oklch(0.97 0.005 30);
+  --muted: oklch(0.18 0.02 20);
+  --muted-foreground: oklch(0.72 0.015 30);
+  --accent: oklch(0.20 0.03 27);
+  --accent-foreground: oklch(0.97 0.005 30);
+  --destructive: oklch(0.55 0.22 27);
+  --destructive-foreground: oklch(1 0 0);
+  --border: rgba(255, 255, 255, 0.07);
+  --input: rgba(255, 255, 255, 0.03);
+  --ring: oklch(0.55 0.22 27);
+  --chart-1: oklch(0.55 0.22 27);
   --chart-2: oklch(0.781 0.145 173.488);
   --chart-3: oklch(0.634 0.141 223.108);
   --chart-4: oklch(0.565 0.146 56.076);
-  --chart-5: oklch(0.637 0.207 25.331);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --chart-5: oklch(0.55 0.22 27);
+  --sidebar: rgba(10, 8, 8, 0.45);
+  --sidebar-foreground: oklch(0.97 0.005 30);
+  --sidebar-primary: oklch(0.55 0.22 27);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: rgba(255, 255, 255, 0.03);
+  --sidebar-accent-foreground: oklch(0.97 0.005 30);
+  --sidebar-border: rgba(255, 255, 255, 0.07);
+  --sidebar-ring: oklch(0.55 0.22 27);
 }
 
 @layer base {
@@ -122,9 +122,64 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground transition-colors duration-300;
+    background-image: radial-gradient(circle at 10% 20%, rgba(220, 38, 38, 0.015) 0%, transparent 40%),
+                      radial-gradient(circle at 90% 80%, rgba(220, 38, 38, 0.015) 0%, transparent 40%);
+    background-attachment: fixed;
   }
-  /* Sidebar: respect theme colors, remove underline */
+  
+  /* Glassmorphic custom overrides for Cards in Dark Mode */
+  .dark .rounded-xl.border.bg-card,
+  .dark .rounded-2xl.border.bg-card,
+  .dark .border.bg-background\/50,
+  .dark [data-slot="card"] {
+    background: rgba(22, 18, 18, 0.4) !important;
+    backdrop-filter: blur(16px) saturate(120%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.07) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4) !important;
+  }
+  
+  /* Inputs */
+  .dark input[type="text"],
+  .dark input[type="email"],
+  .dark input[type="password"],
+  .dark textarea,
+  .dark select,
+  .dark [data-slot="input"],
+  .dark [data-slot="textarea"] {
+    background: rgba(255, 255, 255, 0.02) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    color: oklch(0.97 0.005 30) !important;
+    transition: all 0.25s ease-in-out !important;
+    border-radius: 8px !important;
+  }
+  
+  .dark input:focus,
+  .dark textarea:focus,
+  .dark select:focus {
+    border-color: rgba(220, 38, 38, 0.5) !important;
+    box-shadow: 0 0 12px rgba(220, 38, 38, 0.2) !important;
+    background: rgba(255, 255, 255, 0.04) !important;
+  }
+
+  /* Custom Scrollbars */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(220, 38, 38, 0.4);
+  }
+
+  /* Sidebar fixes */
   [data-slot="sidebar"] a,
   [data-sidebar="sidebar"] a,
   [data-slot="sidebar"] svg,
@@ -134,8 +189,63 @@
   [data-slot="sidebar"] div,
   [data-sidebar="sidebar"] div {
     text-decoration: none !important;
-    color: var(--sidebar-foreground) !important;
   }
+}
+
+/* Glassmorphism Reusable Helpers */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(16px) saturate(110%);
+  border: 1px solid rgba(143, 44, 36, 0.08);
+  border-top: 1px solid rgba(143, 44, 36, 0.12);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.03);
+}
+.dark .glass-panel {
+  background: rgba(20, 16, 16, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(143, 44, 36, 0.08);
+  border-top: 1px solid rgba(143, 44, 36, 0.12);
+  border-radius: 14px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.dark .glass-card {
+  background: rgba(22, 18, 18, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+.glass-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(220, 38, 38, 0.3);
+  box-shadow: 0 12px 30px rgba(220, 38, 38, 0.08), 0 0 15px rgba(220, 38, 38, 0.04);
+}
+
+/* Red-themed glowing badges */
+.badge-gaming {
+  background: rgba(220, 38, 38, 0.08) !important;
+  border: 1px solid rgba(220, 38, 38, 0.2) !important;
+  color: oklch(0.68 0.18 27) !important;
+  border-radius: 6px !important;
+}
+
+/* Premium gaming button hover animations */
+.btn-gaming {
+  position: relative;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.btn-gaming:hover {
+  transform: translateY(-1px) scale(1.01);
+  box-shadow: 0 0 20px rgba(220, 38, 38, 0.25);
 }
 
 /* Make Next.js Image load instantly without fade-in */

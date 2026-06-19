@@ -23,24 +23,24 @@ function MemberItem({
   isOwner: boolean;
 }) {
   return (
-    <div className="flex items-center justify-between gap-3 rounded-lg border p-3">
+    <div className="glass-card flex items-center justify-between gap-3 p-3 border border-border/40 hover:border-primary/20 transition-all hover:transform-none hover:shadow-none bg-background/10">
       <div className="flex min-w-0 items-center gap-3">
-        <Avatar className="size-10 border">
+        <Avatar className="size-10 border border-border/60">
           <AvatarImage src={player.avatar} alt={player.name} />
-          <AvatarFallback className="bg-gradient-to-r from-violet-600 to-pink-500 text-white">
+          <AvatarFallback className="bg-gradient-to-r from-red-500 via-purple-600 to-indigo-600 text-white font-medium text-sm">
             {player.name?.charAt(0)?.toUpperCase() || "?"}
           </AvatarFallback>
         </Avatar>
         <div className="min-w-0">
-          <p className="truncate font-medium">{player.name}</p>
+          <p className="truncate font-bold text-sm text-neutral-100">{player.name}</p>
           {isOwner && (
-            <p className="text-xs text-muted-foreground">Room owner</p>
+            <p className="text-[10px] text-neutral-400 font-medium">Room owner</p>
           )}
         </div>
       </div>
       {isOwner && (
-        <Badge variant="secondary" className="gap-1 shrink-0">
-          <Crown className="size-3" />
+        <Badge variant="secondary" className="badge-gaming gap-1 shrink-0 bg-amber-500/10 text-amber-500 border-amber-500/20">
+          <Crown className="size-3 text-amber-500" />
           Owner
         </Badge>
       )}
@@ -50,10 +50,10 @@ function MemberItem({
 
 export default function RoomMembers({ room }: RoomMembersProps) {
   return (
-    <Card>
+    <Card className="glass-card bg-background/25">
       <CardHeader>
-        <CardTitle>Players</CardTitle>
-        <CardDescription>
+        <CardTitle className="text-white font-bold">Players</CardTitle>
+        <CardDescription className="text-neutral-400">
           {room.players.length} of {room.maxPlayers} players joined
         </CardDescription>
       </CardHeader>

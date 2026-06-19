@@ -82,7 +82,7 @@ export default function RoomsPage() {
             {pagination ? ` (${pagination.total} total)` : ""}
           </p>
         </div>
-        <Button asChild className="w-full gap-2 sm:w-auto">
+        <Button asChild className="btn-gaming bg-primary hover:bg-primary/95 text-white font-semibold shadow-md shadow-red-900/10 w-full gap-2 sm:w-auto border-0">
           <Link href="/dashboard/rooms/create">
             <Plus className="size-4" />
             Create Room
@@ -90,18 +90,18 @@ export default function RoomsPage() {
         </Button>
       </div>
 
-      <Card className="border-dashed bg-muted/30">
+      <Card className="glass-card border-dashed border-white/10 hover:border-red-500/20 hover:transform-none bg-background/25 backdrop-blur-md">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg">
-            <Grid3X3 className="size-5" />
+          <CardTitle className="flex items-center gap-2 text-lg text-white font-bold">
+            <Grid3X3 className="size-5 text-primary" />
             Play offline
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-neutral-400">
             Two players on the same device — no room code or internet needed.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Button asChild variant="secondary" className="gap-2">
+          <Button asChild variant="secondary" className="h-9 font-semibold bg-background/30 hover:bg-background/50 border border-white/10 hover:border-red-500/40 text-neutral-200 transition-all gap-2">
             <Link href="/dashboard/games/tic-tac-toe">
               <Grid3X3 className="size-4" />
               Local Tic-Tac-Toe
@@ -113,15 +113,15 @@ export default function RoomsPage() {
       <JoinRoomForm onJoined={() => void fetchRooms()} />
 
       {rooms.length === 0 ? (
-        <Card className="border-dashed">
+        <Card className="glass-card border-dashed border-white/10 hover:transform-none bg-background/25">
           <CardHeader className="text-center">
-            <CardTitle>No rooms yet</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-white font-bold">No rooms yet</CardTitle>
+            <CardDescription className="text-neutral-400">
               Create your first room or join one using a room code above.
             </CardDescription>
           </CardHeader>
           <CardContent className="flex justify-center pb-6">
-            <Button asChild className="gap-2">
+            <Button asChild className="btn-gaming bg-primary hover:bg-primary/95 text-white font-semibold shadow-md shadow-red-900/10 gap-2 border-0">
               <Link href="/dashboard/rooms/create">
                 <Plus className="size-4" />
                 Create Your First Room

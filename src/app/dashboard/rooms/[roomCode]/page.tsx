@@ -132,7 +132,7 @@ export default function RoomDetailsPage({ params }: RoomDetailsPageProps) {
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-wrap items-center gap-3">
-          <Button asChild variant="secondary" className="w-full gap-2 sm:w-auto">
+          <Button asChild variant="secondary" className="h-9 font-semibold bg-background/30 hover:bg-background/50 border border-white/10 hover:border-red-500/40 text-neutral-200 transition-all gap-2 w-full sm:w-auto">
             <Link href="/dashboard/rooms">
               <ArrowLeft className="size-4" />
               Back to Rooms
@@ -151,13 +151,15 @@ export default function RoomDetailsPage({ params }: RoomDetailsPageProps) {
       </div>
 
       <RoomDetails room={room} />
-      <RoomMembers room={room} />
+      <div className="mt-4">
+        <RoomMembers room={room} />
+      </div>
 
       {isMember && canStartRoom && (
-        <Card>
+        <Card className="glass-card bg-background/25">
           <CardHeader>
-            <CardTitle>Ready to play?</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-white font-bold">Ready to play?</CardTitle>
+            <CardDescription className="text-neutral-400">
               Start the room when all players have joined. Everyone will be
               notified in real time.
             </CardDescription>
@@ -166,7 +168,7 @@ export default function RoomDetailsPage({ params }: RoomDetailsPageProps) {
             <Button
               onClick={() => void startRoom()}
               disabled={starting || actionLoading}
-              className="gap-2"
+              className="btn-gaming bg-primary hover:bg-primary/95 text-white font-semibold shadow-md shadow-red-900/10 gap-2 border-0 h-9.5"
             >
               <Play className="size-4" />
               {starting ? "Starting..." : "Start Game"}
@@ -176,18 +178,18 @@ export default function RoomDetailsPage({ params }: RoomDetailsPageProps) {
       )}
 
       {isMember && room.status === "playing" && room.gameType === "tic-tac-toe" && (
-        <Card className="border-violet-500/30 bg-violet-500/5">
+        <Card className="glass-card border-violet-500/30 hover:border-violet-500/50 bg-violet-500/5">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Gamepad2 className="size-5" />
+            <CardTitle className="flex items-center gap-2 text-white font-bold">
+              <Gamepad2 className="size-5 text-violet-400" />
               Game in progress
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-neutral-400">
               Enter the game board to play Tic-Tac-Toe with other room members.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button asChild className="gap-2">
+            <Button asChild className="btn-gaming bg-primary hover:bg-primary/95 text-white font-semibold shadow-md shadow-red-900/10 gap-2 border-0 h-9.5">
               <Link href={`/dashboard/rooms/${room.roomCode}/game`}>
                 <Gamepad2 className="size-4" />
                 Enter Game
@@ -205,10 +207,10 @@ export default function RoomDetailsPage({ params }: RoomDetailsPageProps) {
       )}
 
       {!isMember && room.status !== "waiting" && (
-        <Card className="border-dashed">
+        <Card className="glass-card border-dashed border-white/10 bg-background/25">
           <CardHeader>
-            <CardTitle>Cannot join this room</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-white font-bold">Cannot join this room</CardTitle>
+            <CardDescription className="text-neutral-400">
               This room is {room.status} and is not accepting new players.
             </CardDescription>
           </CardHeader>
@@ -216,7 +218,7 @@ export default function RoomDetailsPage({ params }: RoomDetailsPageProps) {
       )}
 
       {isMember && room.status === "waiting" && actionLoading && (
-        <p className="text-sm text-muted-foreground">Updating room...</p>
+        <p className="text-sm text-neutral-400 animate-pulse">Updating room...</p>
       )}
     </div>
   );

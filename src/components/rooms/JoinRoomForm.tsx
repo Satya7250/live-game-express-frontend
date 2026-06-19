@@ -68,22 +68,22 @@ export default function JoinRoomForm({
   };
 
   return (
-    <Card>
+    <Card className="glass-card bg-background/25 hover:transform-none">
       <CardHeader>
-        <CardTitle>Join a Room</CardTitle>
-        <CardDescription>
+        <CardTitle className="text-white font-bold">Join a Room</CardTitle>
+        <CardDescription className="text-neutral-400">
           Enter a 6-character room code to join an existing game room
         </CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="room-code">Room Code</Label>
+            <Label htmlFor="room-code" className="text-neutral-300 font-medium">Room Code</Label>
             <Input
               id="room-code"
               placeholder="ABC123"
               disabled={loading}
-              className="font-mono uppercase tracking-widest"
+              className="font-mono uppercase tracking-widest border-white/10 bg-background/30 focus-visible:ring-primary/20"
               maxLength={6}
               {...register("roomCode")}
             />
@@ -93,7 +93,7 @@ export default function JoinRoomForm({
               </p>
             )}
           </div>
-          <Button type="submit" disabled={loading} className="w-full sm:w-auto">
+          <Button type="submit" disabled={loading} className="btn-gaming bg-primary hover:bg-primary/95 text-white font-semibold shadow-md shadow-red-900/10 w-full sm:w-auto border-0 h-9.5">
             {loading ? "Joining room..." : "Join Room"}
           </Button>
         </CardContent>

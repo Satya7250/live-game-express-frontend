@@ -55,25 +55,26 @@ export default function LeaveRoomButton({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="destructive" className="gap-2">
+        <Button variant="destructive" className="btn-gaming bg-destructive hover:bg-destructive/90 text-white font-semibold shadow-md shadow-red-900/10 gap-2 border-0 h-9.5">
           <LogOut className="size-4" />
           Leave Room
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="glass-card border-border/45 sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Leave room?</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-lg font-bold text-white">Leave room?</DialogTitle>
+          <DialogDescription className="text-neutral-400 text-sm mt-1">
             You are about to leave &quot;{roomName}&quot;. If you are the last
             player, the room will be deleted.
           </DialogDescription>
         </DialogHeader>
-        <DialogFooter className="flex-col-reverse gap-2 sm:flex-row">
+        <DialogFooter className="flex-col-reverse gap-2 sm:flex-row mt-4">
           <Button
             type="button"
             variant="secondary"
             disabled={loading}
             onClick={() => setOpen(false)}
+            className="rounded-lg h-9 font-semibold bg-background/30 hover:bg-background/50 border border-white/10 text-neutral-200 transition-all"
           >
             Cancel
           </Button>
@@ -82,6 +83,7 @@ export default function LeaveRoomButton({
             variant="destructive"
             disabled={loading}
             onClick={() => void handleLeave()}
+            className="rounded-lg h-9 font-semibold bg-destructive hover:bg-destructive/90 text-white border-0 shadow-sm"
           >
             {loading ? "Leaving..." : "Leave Room"}
           </Button>

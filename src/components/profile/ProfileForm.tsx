@@ -147,7 +147,7 @@ export default function ProfileForm({
         </div>
       </div>
 
-      <Button type="submit" disabled={isSubmitting} className="w-full">
+      <Button type="submit" disabled={isSubmitting} className="btn-gaming bg-primary hover:bg-primary/95 text-white font-semibold shadow-md shadow-red-900/10 w-full mt-2">
         {imageUploading
           ? "Uploading image..."
           : saving

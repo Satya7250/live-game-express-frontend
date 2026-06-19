@@ -31,18 +31,18 @@ function GameCellComponent({
       disabled={disabled || value !== null}
       onClick={() => onClick?.(index)}
       className={cn(
-        "relative flex aspect-square items-center justify-center rounded-xl border-2 text-4xl font-bold transition-all sm:text-5xl",
-        "bg-card hover:bg-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-        value === "X" && "text-sky-500",
-        value === "O" && "text-rose-500",
-        isWinning && "border-amber-400 bg-amber-500/10 shadow-lg shadow-amber-500/20",
-        isLastMove && !isWinning && "ring-2 ring-violet-500/60",
-        disabled && "cursor-not-allowed opacity-70"
+        "relative flex aspect-square items-center justify-center rounded-xl border-2 text-4xl font-extrabold transition-all duration-300 sm:text-5xl",
+        "bg-background/30 backdrop-blur-md border-white/5 hover:border-white/15 hover:bg-white/5 hover:scale-[1.02] shadow-[0_8px_32px_rgba(0,0,0,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
+        value === "X" && "text-sky-400 drop-shadow-[0_0_10px_rgba(56,189,248,0.6)] border-sky-500/20",
+        value === "O" && "text-red-500 drop-shadow-[0_0_10px_rgba(239,68,68,0.6)] border-red-500/20",
+        isWinning && "border-amber-400/80 bg-amber-500/10 shadow-[0_0_25px_rgba(245,158,11,0.25)] text-amber-300 drop-shadow-[0_0_8px_rgba(245,158,11,0.7)] hover:scale-100",
+        isLastMove && !isWinning && "ring-2 ring-primary/40 border-primary/40 bg-primary/5",
+        disabled && value === null && "cursor-not-allowed opacity-50 hover:scale-100"
       )}
     >
       <span
         className={cn(
-          "transition-transform duration-300",
+          "transition-all duration-300",
           value && "animate-in zoom-in-50",
           isLastMove && value && "scale-110"
         )}
@@ -50,7 +50,7 @@ function GameCellComponent({
         {value}
       </span>
       {isLastMove && value && (
-        <span className="absolute inset-0 rounded-xl ring-2 ring-violet-400/40 animate-pulse" />
+        <span className="absolute inset-0 rounded-xl ring-2 ring-primary/30 animate-pulse" />
       )}
     </button>
   );

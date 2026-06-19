@@ -97,7 +97,7 @@ export default function ChangePasswordForm() {
         )}
       </div>
 
-      <Button type="submit" disabled={loading} className="w-full">
+      <Button type="submit" disabled={loading} className="btn-gaming bg-primary hover:bg-primary/95 text-white font-semibold shadow-md shadow-red-900/10 w-full mt-2">
         {loading ? "Saving password..." : "Change Password"}
       </Button>
     </form>

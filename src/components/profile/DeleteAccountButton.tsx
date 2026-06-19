@@ -64,17 +64,17 @@ export default function DeleteAccountButton() {
   };
 
   return (
-    <Card className="border-destructive/40">
+    <Card className="glass-card border-destructive/30 hover:border-destructive/50 hover:transform-none">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-destructive">Delete Account</CardTitle>
-        <CardDescription>
+        <CardTitle className="text-red-500 font-bold">Delete Account</CardTitle>
+        <CardDescription className="text-neutral-400">
           Once you delete your account, there is no going back. Please be certain.
         </CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="delete-password">
+            <Label htmlFor="delete-password" className="text-neutral-300 font-medium">
               Enter your password to confirm
             </Label>
             <Input
@@ -83,6 +83,7 @@ export default function DeleteAccountButton() {
               placeholder="Enter your password"
               disabled={loading}
               autoComplete="current-password"
+              className="border-white/10 bg-background/30 focus-visible:ring-primary/20"
               {...register("password")}
             />
             {errors.password && (
@@ -98,7 +99,7 @@ export default function DeleteAccountButton() {
             variant="secondary"
             disabled={loading}
             onClick={() => reset()}
-            className="w-full sm:w-auto"
+            className="w-full sm:w-auto font-semibold rounded-lg bg-background/30 hover:bg-background/50 border-white/10 text-neutral-200 transition-all"
           >
             Cancel
           </Button>
@@ -106,7 +107,7 @@ export default function DeleteAccountButton() {
             type="submit"
             variant="destructive"
             disabled={loading}
-            className="w-full gap-2 sm:w-auto"
+            className="w-full gap-2 sm:w-auto font-semibold rounded-lg bg-destructive hover:bg-destructive/90 text-destructive-foreground border-0 shadow-sm"
           >
             <Trash2 className="size-4" />
             {loading ? "Deleting account..." : "Delete Account"}

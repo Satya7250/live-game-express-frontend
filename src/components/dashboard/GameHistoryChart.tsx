@@ -11,11 +11,11 @@
  const chartConfig = {
    wins: {
      label: "Wins",
-     color: "oklch(0.627 0.265 303.9)", // violet-500
+     color: "oklch(0.55 0.22 27)", // Vibrant Crimson Accent
    },
    losses: {
      label: "Losses",
-     color: "oklch(0.707 0.022 261.9)", // slate-400
+     color: "rgba(255, 255, 255, 0.2)", // Muted Charcoal/Silver
    },
  } satisfies ChartConfig;
  
@@ -89,38 +89,38 @@
  
    if (loading) {
      return (
-       <Card>
+       <Card className="glass-card border-border/40 hover:transform-none hover:shadow-lg">
          <CardHeader>
-           <Skeleton className="h-6 w-36 mb-2" />
-           <Skeleton className="h-4 w-52" />
+           <Skeleton className="h-6 w-36 bg-muted/60" />
+           <Skeleton className="h-4 w-52 bg-muted/60 mt-1" />
          </CardHeader>
          <CardContent className="h-[250px] flex items-center justify-center">
-           <Skeleton className="h-[200px] w-full" />
+           <Skeleton className="h-[200px] w-full bg-muted/60" />
          </CardContent>
        </Card>
      );
    }
  
    return (
-     <Card className="border-border/40 bg-background/50 backdrop-blur-[2px]">
+     <Card className="glass-card border-border/40 hover:transform-none hover:shadow-lg bg-background/30 backdrop-blur-md">
        <CardHeader>
-         <CardTitle className="text-lg font-semibold">Game Win/Loss History</CardTitle>
-         <CardDescription>Visual stats for your recent online matches</CardDescription>
+         <CardTitle className="text-lg font-bold text-white">Game Win/Loss History</CardTitle>
+         <CardDescription className="text-neutral-400">Visual stats for your recent online matches</CardDescription>
        </CardHeader>
        <CardContent className="px-2 pt-4 sm:px-6">
          <ChartContainer config={chartConfig} className="aspect-auto h-[250px] w-full">
            <AreaChart data={chartData}>
              <defs>
                <linearGradient id="fillWins" x1="0" y1="0" x2="0" y2="1">
-                 <stop offset="5%" stopColor="var(--color-wins)" stopOpacity={0.6} />
-                 <stop offset="95%" stopColor="var(--color-wins)" stopOpacity={0.05} />
+                 <stop offset="5%" stopColor="var(--color-wins)" stopOpacity={0.4} />
+                 <stop offset="95%" stopColor="var(--color-wins)" stopOpacity={0.01} />
                </linearGradient>
                <linearGradient id="fillLosses" x1="0" y1="0" x2="0" y2="1">
-                 <stop offset="5%" stopColor="var(--color-losses)" stopOpacity={0.4} />
-                 <stop offset="95%" stopColor="var(--color-losses)" stopOpacity={0.05} />
+                 <stop offset="5%" stopColor="var(--color-losses)" stopOpacity={0.2} />
+                 <stop offset="95%" stopColor="var(--color-losses)" stopOpacity={0.01} />
                </linearGradient>
              </defs>
-             <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-muted/30" />
+             <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-muted/15" />
              <XAxis
                dataKey="date"
                tickLine={false}

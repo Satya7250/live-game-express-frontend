@@ -55,13 +55,13 @@ export default function FriendSearch({
   };
 
   return (
-    <Card>
+    <Card className="glass-card border-border/40 hover:transform-none hover:shadow-lg bg-background/30 backdrop-blur-md">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <UserPlus className="size-5" />
+        <CardTitle className="flex items-center gap-2 text-white font-bold">
+          <UserPlus className="size-5 text-primary" />
           Add Friend
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="text-neutral-400 text-sm mt-1">
           Enter a user&apos;s 24-character ID to send a friend request. You can
           find your own ID on your profile page.
         </CardDescription>
@@ -69,12 +69,12 @@ export default function FriendSearch({
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="receiver-id">User ID</Label>
+            <Label htmlFor="receiver-id" className="text-neutral-300 font-medium">User ID</Label>
             <Input
               id="receiver-id"
               placeholder="e.g. 507f1f77bcf86cd799439011"
               disabled={sending}
-              className="font-mono"
+              className="font-mono h-10 border-white/10 bg-background/30 focus-visible:ring-primary/20"
               maxLength={24}
               {...register("receiverId")}
             />
@@ -86,12 +86,12 @@ export default function FriendSearch({
           </div>
 
           {submitted && !errors.receiverId && (
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-emerald-400 font-medium">
               Request sent. Check the Sent tab for status.
             </p>
           )}
 
-          <Button type="submit" disabled={sending} className="gap-2">
+          <Button type="submit" disabled={sending} className="btn-gaming h-9.5 rounded-lg bg-primary text-white font-semibold px-4 border-0 shadow-md shadow-red-900/10 gap-2">
             {sending ? (
               <Loader2 className="size-4 animate-spin" />
             ) : (

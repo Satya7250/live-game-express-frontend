@@ -9,6 +9,7 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { isAxiosError } from "axios";
 import { toast } from "sonner";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 
 import {
   signupSchema,
@@ -34,6 +35,8 @@ export default function SignupForm() {
   const { signup, loading: authLoading, error } = useAuth();
 
   const [imageUploading, setImageUploading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const {
     register,
@@ -137,7 +140,7 @@ export default function SignupForm() {
         className="trees"
       />
 
-      <div className="login">
+      <div className="login max-w-[90vw] sm:max-w-2xl w-full mx-auto">
         <h2>Sign Up</h2>
 
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -207,12 +210,24 @@ export default function SignupForm() {
               )}
             </div>
 
-            <div className="inputBox">
+            <div className="inputBox relative">
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="Password"
+                className="pr-10"
                 {...register("password")}
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8f2c24] hover:text-[#d64c42] focus:outline-none cursor-pointer"
+              >
+                {showPassword ? (
+                  <EyeOff className="size-4.5" />
+                ) : (
+                  <Eye className="size-4.5" />
+                )}
+              </button>
 
               {errors.password && (
                 <p className="text-sm text-red-500">
@@ -221,12 +236,24 @@ export default function SignupForm() {
               )}
             </div>
 
-            <div className="inputBox">
+            <div className="inputBox relative">
               <input
-                type="password"
+                type={showConfirmPassword ? "text" : "password"}
                 placeholder="Confirm Password"
+                className="pr-10"
                 {...register("confirmPassword")}
               />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8f2c24] hover:text-[#d64c42] focus:outline-none cursor-pointer"
+              >
+                {showConfirmPassword ? (
+                  <EyeOff className="size-4.5" />
+                ) : (
+                  <Eye className="size-4.5" />
+                )}
+              </button>
 
               {errors.confirmPassword && (
                 <p className="text-sm text-red-500">
@@ -275,7 +302,9 @@ export default function SignupForm() {
               type="submit"
               id="btn"
               disabled={isSubmitting}
+              className="flex items-center justify-center gap-2"
             >
+              {isSubmitting && <Loader2 className="size-4.5 animate-spin" />}
               {buttonText}
             </button>
           </div>

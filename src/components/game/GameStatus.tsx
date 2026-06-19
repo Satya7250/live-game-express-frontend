@@ -34,6 +34,19 @@ function getPlayerName(
   return players.find((player) => player._id === playerId)?.name ?? "Unknown";
 }
 
+function getGameStatusClass(status: TicTacToeGame["status"]) {
+  switch (status) {
+    case "playing":
+      return "bg-emerald-500/10 text-emerald-400 border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.15)]";
+    case "won":
+      return "bg-amber-500/10 text-amber-500 border-amber-500/20 shadow-[0_0_10px_rgba(245,158,11,0.15)]";
+    case "draw":
+      return "bg-neutral-500/10 text-neutral-400 border-neutral-500/20";
+    default:
+      return "";
+  }
+}
+
 function GameStatusComponent({
   game,
   players,
@@ -43,10 +56,10 @@ function GameStatusComponent({
 }: GameStatusProps) {
   if (!game) {
     return (
-      <Card>
+      <Card className="glass-card bg-background/25 hover:transform-none">
         <CardHeader>
-          <CardTitle>Waiting for game</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-white font-bold">Waiting for game</CardTitle>
+          <CardDescription className="text-neutral-400">
             The game will begin once started by the room owner.
           </CardDescription>
         </CardHeader>
@@ -58,19 +71,11 @@ function GameStatusComponent({
   const winnerName = getPlayerName(players, game.winner);
 
   return (
-    <Card>
+    <Card className="glass-card bg-background/25 hover:transform-none">
       <CardHeader>
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <CardTitle>Game Status</CardTitle>
-          <Badge
-            variant={
-              game.status === "playing"
-                ? "secondary"
-                : game.status === "won"
-                  ? "default"
-                  : "outline"
-            }
-          >
+          <CardTitle className="text-white font-bold">Game Status</CardTitle>
+          <Badge variant="outline" className={getGameStatusClass(game.status)}>
             {game.status === "playing"
               ? "In Progress"
               : game.status === "won"
@@ -84,8 +89,8 @@ function GameStatusComponent({
           <div className="flex items-center gap-2 text-sm">
             {submittingMove ? (
               <>
-                <Loader2 className="size-4 animate-spin text-violet-500" />
-                <span>Submitting move...</span>
+                <Loader2 className="size-4 animate-spin text-primary" />
+                <span className="text-neutral-300">Submitting move...</span>
               </>
             ) : (
               <>
@@ -93,11 +98,11 @@ function GameStatusComponent({
                   className={cn(
                     "size-2 rounded-full",
                     isMyTurn
-                      ? "animate-pulse bg-emerald-500"
-                      : "animate-pulse bg-violet-500"
+                      ? "animate-pulse bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.7)]"
+                      : "animate-pulse bg-primary shadow-[0_0_8px_rgba(220,38,38,0.7)]"
                   )}
                 />
-                <span>
+                <span className="text-neutral-200 font-semibold">
                   {isMyTurn
                     ? "Your turn"
                     : `${currentPlayerName}'s turn`}
@@ -110,18 +115,18 @@ function GameStatusComponent({
         {game.status === "won" && (
           <div
             className={cn(
-              "flex items-center gap-3 rounded-lg border border-amber-400/50 bg-amber-500/10 p-4",
+              "flex items-center gap-3 rounded-xl border border-amber-400/30 bg-amber-500/10 p-4 shadow-[inset_0_0_15px_rgba(245,158,11,0.15)]",
               "animate-in fade-in zoom-in-95 duration-500"
             )}
           >
-            <Trophy className="size-8 shrink-0 text-amber-500" />
+            <Trophy className="size-8 shrink-0 text-amber-400 drop-shadow-[0_0_6px_rgba(245,158,11,0.5)]" />
             <div>
-              <p className="font-semibold">
+              <p className="font-bold text-amber-400">
                 {game.winner === currentUserId
                   ? "You won!"
                   : `${winnerName} wins!`}
               </p>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-xs text-neutral-400 mt-0.5">
                 Congratulations on the victory
               </p>
             </div>
@@ -131,14 +136,14 @@ function GameStatusComponent({
         {game.status === "draw" && (
           <div
             className={cn(
-              "flex items-center gap-3 rounded-lg border bg-muted/50 p-4",
+              "flex items-center gap-3 rounded-xl border border-white/10 bg-background/25 p-4 shadow-[inset_0_0_12px_rgba(255,255,255,0.03)]",
               "animate-in fade-in zoom-in-95 duration-500"
             )}
           >
-            <Handshake className="size-8 shrink-0 text-muted-foreground" />
+            <Handshake className="size-8 shrink-0 text-neutral-400" />
             <div>
-              <p className="font-semibold">It&apos;s a draw!</p>
-              <p className="text-sm text-muted-foreground">
+              <p className="font-bold text-white">It&apos;s a draw!</p>
+              <p className="text-xs text-neutral-400 mt-0.5">
                 No winner this round
               </p>
             </div>

@@ -64,11 +64,12 @@ export default function CreateRoomForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-6">
       <div className="space-y-2">
-        <Label htmlFor="room-name">Room Name</Label>
+        <Label htmlFor="room-name" className="text-neutral-300 font-medium">Room Name</Label>
         <Input
           id="room-name"
           placeholder="Enter room name"
           disabled={loading}
+          className="border-white/10 bg-background/30 focus-visible:ring-primary/20"
           {...register("name")}
         />
         {errors.name && (
@@ -77,7 +78,7 @@ export default function CreateRoomForm() {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="game-type">Game Type</Label>
+        <Label htmlFor="game-type" className="text-neutral-300 font-medium">Game Type</Label>
         <Controller
           name="gameType"
           control={control}
@@ -87,10 +88,10 @@ export default function CreateRoomForm() {
               onValueChange={field.onChange}
               disabled={loading}
             >
-              <SelectTrigger id="game-type" className="w-full">
+              <SelectTrigger id="game-type" className="w-full border-white/10 bg-background/30 focus-visible:ring-primary/20">
                 <SelectValue placeholder="Select a game" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="glass-card border-border/45 bg-popover text-white">
                 <SelectItem value="tic-tac-toe">Tic Tac Toe</SelectItem>
                 <SelectItem value="rock-paper-scissors">
                   Rock Paper Scissors
@@ -105,13 +106,14 @@ export default function CreateRoomForm() {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="max-players">Max Players</Label>
+        <Label htmlFor="max-players" className="text-neutral-300 font-medium">Max Players</Label>
         <Input
           id="max-players"
           type="number"
           min={2}
           max={10}
           disabled={loading}
+          className="border-white/10 bg-background/30 focus-visible:ring-primary/20"
           {...register("maxPlayers", { valueAsNumber: true })}
         />
         {errors.maxPlayers && (
@@ -119,22 +121,22 @@ export default function CreateRoomForm() {
             {errors.maxPlayers.message}
           </p>
         )}
-        <p className="text-xs text-muted-foreground">
+        <p className="text-xs text-neutral-400">
           Between 2 and 10 players
         </p>
       </div>
 
-      <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+      <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end mt-4">
         <Button
           type="button"
           variant="secondary"
           disabled={loading}
           onClick={() => router.push("/dashboard/rooms")}
-          className="w-full sm:w-auto"
+          className="w-full sm:w-auto font-semibold rounded-lg bg-background/30 hover:bg-background/50 border-white/10 text-neutral-200 transition-all h-9.5"
         >
           Cancel
         </Button>
-        <Button type="submit" disabled={loading} className="w-full sm:w-auto">
+        <Button type="submit" disabled={loading} className="btn-gaming bg-primary hover:bg-primary/95 text-white font-semibold shadow-md shadow-red-900/10 w-full sm:w-auto border-0 h-9.5">
           {loading ? "Creating room..." : "Create Room"}
         </Button>
       </div>

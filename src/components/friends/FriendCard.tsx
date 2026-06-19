@@ -39,17 +39,17 @@ function FriendCardComponent({
   };
 
   return (
-    <div className="flex items-center justify-between gap-3 rounded-xl border p-4 transition-colors hover:border-primary/30">
+    <div className="glass-card flex items-center justify-between gap-3 p-4 border border-border/40 hover:border-primary/20">
       <div className="flex min-w-0 items-center gap-3">
-        <Avatar className="size-12 border">
+        <Avatar className="size-11 border border-border/60">
           <AvatarImage src={friend.avatar} alt={friend.name} />
-          <AvatarFallback className="bg-gradient-to-r from-violet-600 to-pink-500 text-white">
+          <AvatarFallback className="bg-gradient-to-r from-red-500 via-purple-600 to-indigo-600 text-white font-medium text-sm">
             {friend.name?.charAt(0)?.toUpperCase() || "?"}
           </AvatarFallback>
         </Avatar>
         <div className="min-w-0">
-          <p className="truncate font-medium">{friend.name}</p>
-          <p className="truncate text-sm text-muted-foreground">
+          <p className="truncate font-bold text-sm text-neutral-100">{friend.name}</p>
+          <p className="truncate text-xs text-neutral-400">
             {friend.email}
           </p>
         </div>
@@ -60,30 +60,31 @@ function FriendCardComponent({
           <Button
             variant="outline"
             size="sm"
-            className="shrink-0 gap-1.5 text-destructive hover:text-destructive"
+            className="shrink-0 h-8 gap-1.5 font-medium rounded-lg text-neutral-400 hover:text-destructive hover:bg-destructive/10 border-white/10 hover:border-destructive/30 transition-all"
             disabled={removing}
           >
             {removing ? (
-              <Loader2 className="size-4 animate-spin" />
+              <Loader2 className="size-3.5 animate-spin" />
             ) : (
-              <UserMinus className="size-4" />
+              <UserMinus className="size-3.5" />
             )}
             Remove
           </Button>
         </DialogTrigger>
-        <DialogContent>
+        <DialogContent className="glass-card border-border/45 sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Remove friend?</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-lg font-bold text-white">Remove friend?</DialogTitle>
+            <DialogDescription className="text-neutral-400 text-sm mt-1">
               You are about to remove &quot;{friend.name}&quot; from your
               friends list. You can send them a new request later.
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter className="flex-col-reverse gap-2 sm:flex-row">
+          <DialogFooter className="flex-col-reverse gap-2 sm:flex-row mt-4">
             <Button
               type="button"
               variant="secondary"
               disabled={removing}
+              className="rounded-lg h-9 font-semibold bg-background/30 hover:bg-background/50 border-white/10"
               onClick={() => setOpen(false)}
             >
               Cancel
@@ -92,6 +93,7 @@ function FriendCardComponent({
               type="button"
               variant="destructive"
               disabled={removing}
+              className="rounded-lg h-9 font-semibold bg-destructive hover:bg-destructive/90 text-destructive-foreground border-0 shadow-sm"
               onClick={() => void handleRemove()}
             >
               {removing ? "Removing..." : "Remove Friend"}

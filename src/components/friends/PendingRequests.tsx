@@ -59,26 +59,26 @@ function PendingRequestsComponent({
           return (
             <div
               key={request._id}
-              className="flex flex-col gap-3 rounded-xl border p-4 sm:flex-row sm:items-center sm:justify-between"
+              className="glass-card flex flex-col gap-3 p-4 border border-border/40 hover:border-primary/20 sm:flex-row sm:items-center sm:justify-between"
             >
               <div className="flex min-w-0 items-center gap-3">
-                <Avatar className="size-12 border">
+                <Avatar className="size-11 border border-border/60">
                   <AvatarImage
                     src={request.receiver.avatar}
                     alt={request.receiver.name}
                   />
-                  <AvatarFallback className="bg-gradient-to-r from-violet-600 to-pink-500 text-white">
+                  <AvatarFallback className="bg-gradient-to-r from-red-500 via-purple-600 to-indigo-600 text-white font-medium text-sm">
                     {request.receiver.name?.charAt(0)?.toUpperCase() || "?"}
                   </AvatarFallback>
                 </Avatar>
                 <div className="min-w-0">
-                  <p className="truncate font-medium">
+                  <p className="truncate font-bold text-sm text-neutral-100">
                     {request.receiver.name}
                   </p>
-                  <p className="truncate text-sm text-muted-foreground">
+                  <p className="truncate text-xs text-neutral-400">
                     {request.receiver.email}
                   </p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-[10px] text-neutral-500 mt-0.5">
                     Sent {formatDateTime(request.createdAt)}
                   </p>
                 </div>
@@ -86,15 +86,15 @@ function PendingRequestsComponent({
 
               <Button
                 size="sm"
-                variant="outline"
-                className="gap-1.5 sm:shrink-0"
+                variant="secondary"
+                className="h-8.5 rounded-lg font-semibold bg-background/30 hover:bg-background/50 border-white/10 hover:border-red-500/40 text-neutral-200 transition-all gap-1.5 sm:shrink-0"
                 disabled={isCanceling}
                 onClick={() => void onCancel?.(request._id)}
               >
                 {isCanceling ? (
-                  <Loader2 className="size-4 animate-spin" />
+                  <Loader2 className="size-3.5 animate-spin" />
                 ) : (
-                  <X className="size-4" />
+                  <X className="size-3.5" />
                 )}
                 Cancel
               </Button>

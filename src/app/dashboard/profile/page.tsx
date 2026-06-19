@@ -111,39 +111,39 @@ export default function ProfilePage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-          <Avatar className="h-24 w-24 border">
+          <Avatar className="h-24 w-24 border border-border/60">
             <AvatarImage
               src={displayProfile.avatar}
               alt={displayProfile.name}
             />
-            <AvatarFallback className="bg-gradient-to-r from-violet-600 to-pink-500 text-3xl text-white">
+            <AvatarFallback className="bg-gradient-to-r from-red-500 via-purple-600 to-indigo-600 text-3xl text-white">
               {displayProfile.name?.charAt(0)?.toUpperCase() || "U"}
             </AvatarFallback>
           </Avatar>
           <div className="space-y-2">
             <div className="flex flex-wrap items-center gap-2">
-              <h1 className="text-2xl font-bold sm:text-3xl">
+              <h1 className="text-2xl font-bold sm:text-3xl text-white">
                 {displayProfile.name}
               </h1>
-              <Badge variant="secondary">{formatRole(displayProfile.role)}</Badge>
+              <Badge variant="secondary" className="badge-gaming">{formatRole(displayProfile.role)}</Badge>
             </div>
-            <p className="text-muted-foreground">{displayProfile.email}</p>
+            <p className="text-neutral-400 text-sm">{displayProfile.email}</p>
           </div>
         </div>
       </div>
 
       <Tabs defaultValue="profile" className="w-full">
-        <TabsList className="grid h-auto w-full grid-cols-1 gap-2 sm:grid-cols-3">
-          <TabsTrigger value="profile">Profile Information</TabsTrigger>
-          <TabsTrigger value="password">Change Password</TabsTrigger>
-          <TabsTrigger value="delete">Delete Account</TabsTrigger>
+        <TabsList className="grid h-auto w-full grid-cols-1 gap-2 sm:grid-cols-3 bg-background/20 border border-border/40 p-1.5 rounded-xl">
+          <TabsTrigger value="profile" className="data-[state=active]:bg-primary data-[state=active]:text-white rounded-lg">Profile Information</TabsTrigger>
+          <TabsTrigger value="password" className="data-[state=active]:bg-primary data-[state=active]:text-white rounded-lg">Change Password</TabsTrigger>
+          <TabsTrigger value="delete" className="data-[state=active]:bg-primary data-[state=active]:text-white rounded-lg">Delete Account</TabsTrigger>
         </TabsList>
 
         <TabsContent value="profile" className="mt-6">
-          <Card>
+          <Card className="glass-card">
             <CardHeader>
-              <CardTitle>Account Details</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-white font-bold">Account Details</CardTitle>
+              <CardDescription className="text-neutral-400">
                 View and manage your personal information
               </CardDescription>
             </CardHeader>
@@ -164,7 +164,7 @@ export default function ProfilePage() {
                 <ProfileDetailItem
                   label="Role"
                   value={
-                    <Badge variant="outline">
+                    <Badge variant="outline" className="border-border/80">
                       {formatRole(displayProfile.role)}
                     </Badge>
                   }
@@ -195,15 +195,15 @@ export default function ProfilePage() {
             <CardFooter>
               <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button className="gap-2">
+                  <Button className="btn-gaming bg-primary hover:bg-primary/95 text-white font-semibold px-4 py-2 shadow-md shadow-red-900/10 gap-2">
                     <Edit3 className="h-4 w-4" />
                     Edit Profile
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[500px]">
+                <DialogContent className="glass-card border-border/45 max-h-[90vh] overflow-y-auto sm:max-w-[500px]">
                   <DialogHeader>
-                    <DialogTitle>Edit Profile</DialogTitle>
-                    <DialogDescription>
+                    <DialogTitle className="text-white font-bold text-lg">Edit Profile</DialogTitle>
+                    <DialogDescription className="text-neutral-400 text-sm mt-1">
                       Update your personal information and profile image.
                     </DialogDescription>
                   </DialogHeader>
@@ -221,10 +221,10 @@ export default function ProfilePage() {
         </TabsContent>
 
         <TabsContent value="password" className="mt-6">
-          <Card>
+          <Card className="glass-card">
             <CardHeader>
-              <CardTitle>Change Password</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-white font-bold">Change Password</CardTitle>
+              <CardDescription className="text-neutral-400">
                 Update your password to keep your account secure
               </CardDescription>
             </CardHeader>
