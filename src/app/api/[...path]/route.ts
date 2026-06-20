@@ -96,5 +96,15 @@ async function proxyRequest(req: NextRequest) {
     }
   });
 
+  // If logout or if token refresh fails, clear cookies on the frontend domain
+  const normalizedPath = path.replace(/\/$/, "");
+  if (
+    normalizedPath === "/auth/logout" ||
+    (normalizedPath === "/auth/refresh-token" && backendResponse.status >= 400)
+  ) {
+    response.cookies.set("accessToken", "", { path: "/", maxAge: 0 });
+    response.cookies.set("refreshToken", "", { path: "/", maxAge: 0 });
+  }
+
   return response;
 }
