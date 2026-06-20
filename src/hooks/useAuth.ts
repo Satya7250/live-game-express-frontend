@@ -28,27 +28,21 @@ export const useAuth = () => {
     data: LoginDto
   ) => {
     try {
-      console.log("[useAuth] Starting login...");
       setLoading(true);
       setError(null);
 
-      console.log("[useAuth] Calling authService.login with data:", data);
       const response = await authService.login(data);
-      console.log("[useAuth] authService.login response:", response);
 
       if (response?.data?.user) {
-        console.log("[useAuth] Setting user in store:", response.data.user);
         setUser(response.data.user);
       }
 
       if (response?.data?.accessToken) {
-        console.log("[useAuth] Setting access token");
         setAccessToken(response.data.accessToken);
       }
 
       return response;
     } catch (err: unknown) {
-      console.error("[useAuth] Login error:", err);
       setError(getApiErrorMessage(err, "Login failed"));
       throw err;
     } finally {

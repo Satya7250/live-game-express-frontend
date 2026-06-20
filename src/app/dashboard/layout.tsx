@@ -17,7 +17,6 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  console.log("[Dashboard Layout] 🏠 Rendering Dashboard Layout");
   const { isConnected } = useSocket();
 
   // Load initial states on mount

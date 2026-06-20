@@ -28,7 +28,6 @@ const ActiveRoomsWidget = dynamic(
 );
 
 export default function Page() {
-  console.log("[Dashboard Page] 📄 Rendering Dashboard Page");
   const user = useAuthStore((state) => state.user);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);

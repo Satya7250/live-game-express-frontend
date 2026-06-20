@@ -65,21 +65,10 @@ export default function LoginForm() {
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      console.log("[LoginForm] Submitting login data...", data);
-      const result = await login(data);
-      console.log("[LoginForm] Login successful! Result:", result);
-      
-      // Check auth store state
-      const authStore = (window as any).__ZUSTAND_STORES__?.auth?.getState?.();
-      console.log("[LoginForm] Auth store after login:", authStore);
-      
-      // Check cookies
-      console.log("[LoginForm] Document cookies:", document.cookie);
-      
+      await login(data);
       router.push("/dashboard");
-      console.log("[LoginForm] Called router.push('/dashboard')");
     } catch (err) {
-      console.error("[LoginForm] Login error:", err);
+      console.error(err);
     }
   };
 
