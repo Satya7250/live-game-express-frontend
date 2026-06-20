@@ -37,23 +37,6 @@ const processQueue = (error: unknown) => {
   failedQueue = [];
 };
 
-const isAuthPage = () => {
-  if (typeof window === "undefined") {
-    return false;
-  }
-
-  const authPages = [
-    "/login",
-    "/signup",
-    "/forgot-password",
-    "/reset-password",
-    "/verify-email",
-  ];
-
-  return authPages.some((page) =>
-    window.location.pathname.startsWith(page)
-  );
-};
 
 api.interceptors.request.use(
   (config) => {
@@ -133,8 +116,10 @@ api.interceptors.response.use(
             new CustomEvent("auth:session-expired")
           );
 
-          if (!isAuthPage()) {
-            window.location.href = "/login";
+          const isDashboardPage = window.location.pathname.startsWith("/dashboard");
+          if (isDashboardPage) {
+            const currentPath = window.location.pathname + window.location.search;
+            window.location.href = `/login?from=${encodeURIComponent(currentPath)}`;
           }
         }
 
