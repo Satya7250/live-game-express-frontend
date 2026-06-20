@@ -368,13 +368,13 @@ img {
   background: #d64c42;
 }
 
-.group {
+.auth-legacy-group {
   display: flex;
   justify-content: center;
   gap: 20px;
 }
 
-.group a {
+.auth-legacy-group a {
   color: #8f2c24;
   font-size: 0.85rem;
   font-weight: 500;
@@ -391,7 +391,7 @@ img {
   margin-top: 12px;
 }
 
-.group a:last-child {
+.auth-legacy-group a:last-child {
   text-decoration: underline;
 }
 

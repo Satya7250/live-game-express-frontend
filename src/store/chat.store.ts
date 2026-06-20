@@ -1,5 +1,7 @@
 import { create } from "zustand";
 import * as chatService from "@/services/chat.service";
+import { ensureSocketConnected } from "@/services/socket.service";
+import { useAuthStore } from "@/store/auth.store";
 import type { Conversation, Message } from "@/types/chat";
 
 interface ChatState {
@@ -15,6 +17,7 @@ interface ChatState {
   selectConversation: (conversationId: string | null) => Promise<void>;
   fetchMessages: (conversationId: string, page?: number) => Promise<void>;
   sendNewMessage: (content: string) => Promise<void>;
+  resendMessage: (tempId: string) => Promise<void>;
   startConversationWithFriend: (friendId: string) => Promise<string | null>;
 
   // Socket updates
@@ -61,8 +64,13 @@ export const useChatStore = create<ChatState>((set, get) => ({
     set({ activeConversationId: conversationId });
     if (!conversationId) return;
 
-    // Join socket room
-    chatService.joinConversationSocket(conversationId);
+    // Join socket room after ensuring connection is active to prevent race condition
+    try {
+      await ensureSocketConnected();
+      chatService.joinConversationSocket(conversationId);
+    } catch (error) {
+      console.error("Failed to connect socket to join conversation room:", error);
+    }
 
     // Fetch messages if not loaded or just reload
     await get().fetchMessages(conversationId, 1);
@@ -75,17 +83,28 @@ export const useChatStore = create<ChatState>((set, get) => ({
       if (response.success && response.data) {
         set((state) => {
           const existing = state.messages[conversationId] || [];
-          // Avoid duplicate messages
-          const newMsgs = response.data.messages.filter(
-            (nm) => !existing.some((em) => em._id === nm._id)
-          );
+          
+          // Combine existing messages and newly fetched messages
+          const combined = [...existing, ...response.data.messages];
+          
+          // De-duplicate by message ID
+          const uniqueMap = new Map<string, Message>();
+          combined.forEach((msg) => {
+            uniqueMap.set(msg._id, msg);
+          });
+          const uniqueMsgs = Array.from(uniqueMap.values());
+          
+          // Sort chronologically: oldest message first, newest message last
+          uniqueMsgs.sort((a, b) => {
+            const timeA = new Date(a.createdAt).getTime();
+            const timeB = new Date(b.createdAt).getTime();
+            return timeA - timeB;
+          });
           
           return {
             messages: {
               ...state.messages,
-              [conversationId]: page === 1 
-                ? response.data.messages.reverse() // Sort chronologically (oldest to newest) for UI rendering
-                : [...newMsgs.reverse(), ...existing],
+              [conversationId]: uniqueMsgs,
             },
           };
         });
@@ -101,24 +120,137 @@ export const useChatStore = create<ChatState>((set, get) => ({
     const { activeConversationId } = get();
     if (!activeConversationId) return;
 
+    const currentUser = useAuthStore.getState().user;
+    if (!currentUser) return;
+
+    // Generate a unique temporary ID for the optimistic update
+    const tempId = `temp-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+    const optimisticMessage: Message = {
+      _id: tempId,
+      conversationId: activeConversationId,
+      sender: currentUser,
+      content,
+      isRead: false,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      status: "sending",
+    };
+
+    // Insert optimistic message immediately
+    set((state) => {
+      const chatMsgs = state.messages[activeConversationId] || [];
+      return {
+        messages: {
+          ...state.messages,
+          [activeConversationId]: [...chatMsgs, optimisticMessage],
+        },
+      };
+    });
+
     try {
       const response = await chatService.sendMessage(activeConversationId, content);
       if (response.success && response.data) {
         const { message, conversation } = response.data;
         
-        // Append locally immediately
-        get().receiveMessage(message);
-        
-        // Update conversation list
-        set((state) => ({
-          conversations: state.conversations.map((c) =>
+        // Replace optimistic message with the server-confirmed message
+        set((state) => {
+          const chatMsgs = state.messages[activeConversationId] || [];
+          const updatedMsgs = chatMsgs.map((m) =>
+            m._id === tempId ? { ...message, status: "sent" as const } : m
+          );
+          
+          // Update conversation list last message fields
+          const updatedConversations = state.conversations.map((c) =>
             c._id === conversation._id ? conversation : c
-          ),
-        }));
+          );
+          
+          return {
+            messages: {
+              ...state.messages,
+              [activeConversationId]: updatedMsgs,
+            },
+            conversations: updatedConversations,
+          };
+        });
       }
     } catch (error) {
       console.error("Failed to send message:", error);
+      // Update optimistic message status to failed
+      set((state) => {
+        const chatMsgs = state.messages[activeConversationId] || [];
+        const updatedMsgs = chatMsgs.map((m) =>
+          m._id === tempId ? { ...m, status: "failed" as const } : m
+        );
+        return {
+          messages: {
+            ...state.messages,
+            [activeConversationId]: updatedMsgs,
+          },
+        };
+      });
       throw error;
+    }
+  },
+
+  resendMessage: async (tempId) => {
+    const { activeConversationId } = get();
+    if (!activeConversationId) return;
+
+    const chatMsgs = get().messages[activeConversationId] || [];
+    const msgToResend = chatMsgs.find((m) => m._id === tempId);
+    if (!msgToResend) return;
+
+    // Set status to sending again
+    set((state) => {
+      const msgs = state.messages[activeConversationId] || [];
+      const updated = msgs.map((m) =>
+        m._id === tempId ? { ...m, status: "sending" as const } : m
+      );
+      return {
+        messages: {
+          ...state.messages,
+          [activeConversationId]: updated,
+        },
+      };
+    });
+
+    try {
+      const response = await chatService.sendMessage(activeConversationId, msgToResend.content);
+      if (response.success && response.data) {
+        const { message, conversation } = response.data;
+        
+        // Replace optimistic message with server-confirmed message
+        set((state) => {
+          const msgs = state.messages[activeConversationId] || [];
+          const updated = msgs.map((m) =>
+            m._id === tempId ? { ...message, status: "sent" as const } : m
+          );
+          const updatedConversations = state.conversations.map((c) =>
+            c._id === conversation._id ? conversation : c
+          );
+          return {
+            messages: {
+              ...state.messages,
+              [activeConversationId]: updated,
+            },
+            conversations: updatedConversations,
+          };
+        });
+      }
+    } catch (error) {
+      console.error("Failed to resend message:", error);
+      set((state) => {
+        const msgs = state.messages[activeConversationId] || [];
+        const updated = msgs.map((m) =>
+          m._id === tempId ? { ...m, status: "failed" as const } : m
+        );
+        return {
+          messages: {
+            ...state.messages,
+            [activeConversationId]: updated,
+          },
+        };
+      });
     }
   },
 
@@ -161,9 +293,50 @@ export const useChatStore = create<ChatState>((set, get) => ({
 
     set((state) => {
       const chatMsgs = state.messages[cid] || [];
+      const currentUserId = useAuthStore.getState().user?._id;
+      const isOwn = message.sender._id === currentUserId;
+      
       const exists = chatMsgs.some((m) => m._id === message._id);
       
-      const newMsgs = exists ? chatMsgs : [...chatMsgs, message];
+      let newMsgs: Message[] = [];
+      if (exists) {
+        newMsgs = chatMsgs;
+      } else {
+        // If it's our own message, check if there's an optimistic sending/failed message we can reconcile with.
+        let reconciled = false;
+        if (isOwn) {
+          const optimisticIndex = chatMsgs.findIndex(
+            (m) =>
+              (m.status === "sending" || m.status === "failed") &&
+              m.content === message.content &&
+              Math.abs(new Date(message.createdAt).getTime() - new Date(m.createdAt).getTime()) < 20000
+          );
+          
+          if (optimisticIndex !== -1) {
+            newMsgs = [...chatMsgs];
+            newMsgs[optimisticIndex] = { ...message, status: "sent" };
+            reconciled = true;
+          }
+        }
+        
+        if (!reconciled) {
+          newMsgs = [...chatMsgs, message];
+        }
+      }
+      
+      // De-duplicate in case of race conditions
+      const uniqueMap = new Map<string, Message>();
+      newMsgs.forEach((msg) => {
+        uniqueMap.set(msg._id, msg);
+      });
+      const sortedUniqueMsgs = Array.from(uniqueMap.values());
+      
+      // Sort chronologically (oldest message first, newest message last)
+      sortedUniqueMsgs.sort((a, b) => {
+        const timeA = new Date(a.createdAt).getTime();
+        const timeB = new Date(b.createdAt).getTime();
+        return timeA - timeB;
+      });
       
       // Update last message in the conversations list
       const updatedConversations = state.conversations.map((c) => {
@@ -188,7 +361,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
       return {
         messages: {
           ...state.messages,
-          [cid]: newMsgs,
+          [cid]: sortedUniqueMsgs,
         },
         conversations: sortedConversations,
       };

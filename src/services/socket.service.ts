@@ -11,6 +11,7 @@ import {
 } from "@/lib/socket";
 import type { CreateRoomDto } from "@/types/room";
 import type {
+  AppSocket,
   ClientToServerEvents,
   RoomJoinPayload,
   RoomLeavePayload,
@@ -77,10 +78,10 @@ export function onSocketEvent<E extends keyof ServerToClientEvents>(
 ): () => void {
   let isActive = true;
   let unsubscribeFn: (() => void) | undefined;
-  let isRegistered = false;
+  let registeredSocket: AppSocket | null = null;
 
   const registerListener = async () => {
-    if (!isActive || isRegistered) return;
+    if (!isActive) return;
     
     try {
       const socket = await ensureSocketConnected();
@@ -89,12 +90,26 @@ export function onSocketEvent<E extends keyof ServerToClientEvents>(
         return;
       }
       
+      // If already registered on this exact socket instance, do nothing
+      if (registeredSocket === socket) {
+        return;
+      }
+      
+      // Clean up previous registration on a different socket (if any)
+      if (registeredSocket) {
+        try {
+          registeredSocket.off(event, handler as never);
+        } catch (err) {
+          console.warn("[Socket] Error cleaning up event listener on old socket:", err);
+        }
+      }
+      
       socket.on(event, handler as never);
-      isRegistered = true;
+      registeredSocket = socket;
       
       unsubscribeFn = () => {
         socket.off(event, handler as never);
-        isRegistered = false;
+        registeredSocket = null;
       };
     } catch {
       // Silently fail, we'll retry when socket connects

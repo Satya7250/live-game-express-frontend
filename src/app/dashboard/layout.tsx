@@ -11,6 +11,7 @@ import { useNotificationStore } from "@/store/notification.store";
 import { useChatStore } from "@/store/chat.store";
 import { useAuthStore } from "@/store/auth.store";
 import { onSocketEvent } from "@/services/socket.service";
+import { joinConversationSocket } from "@/services/chat.service";
 
 export default function DashboardLayout({
   children,
@@ -29,6 +30,12 @@ export default function DashboardLayout({
   // Set up global socket listeners when socket connection is active
   useEffect(() => {
     if (!isConnected) return;
+
+    // Auto-rejoin the active conversation room on connect / reconnect
+    const activeConversationId = useChatStore.getState().activeConversationId;
+    if (activeConversationId) {
+      joinConversationSocket(activeConversationId);
+    }
 
     // Chat events listeners
     const unsubscribeNewMessage = onSocketEvent(

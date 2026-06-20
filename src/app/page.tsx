@@ -514,64 +514,64 @@ export default function Home() {
           <div className="grid md:grid-cols-2 gap-8">
             
             {/* Fire Card - Competitive */}
-            <div className="p-8 rounded-3xl bg-gradient-to-br from-orange-600/5 to-transparent border border-orange-500/10 hover:border-orange-500/20 transition-all duration-300 group">
-              <div className="flex items-center gap-4 mb-6">
+            <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-orange-600/5 to-transparent border border-orange-500/10 hover:border-orange-500/20 hover:shadow-[0_0_30px_rgba(255,69,0,0.08)] transition-all duration-300 group">
+              <div className="flex items-center gap-4 mb-4 sm:mb-6">
                 <div className="flex size-12 items-center justify-center rounded-2xl bg-orange-500/10 text-orange-500 border border-orange-500/20 shadow-lg shadow-orange-500/5 group-hover:scale-105 transition-all">
                   <Flame className="size-6 fill-orange-500/10" />
                 </div>
                 <div>
                   <h4 className="text-lg font-bold text-white">The Fire Realm</h4>
-                  <p className="text-xs text-orange-400/80 font-medium">COMPETITIVE MATCHES</p>
+                  <p className="text-xs text-orange-400/80 font-medium tracking-wider">COMPETITIVE MATCHES</p>
                 </div>
               </div>
 
-              <p className="text-sm text-neutral-400 leading-relaxed mb-6">
+              <p className="text-sm text-neutral-400 leading-relaxed mb-4 sm:mb-6">
                 High-energy game room setup, instant socket matchmaking, and live room lobby management. Build custom parameters, limit players, and invite challengers into your room instantly.
               </p>
 
-              <ul className="space-y-3.5 text-sm text-neutral-300">
+              <ul className="space-y-2.5 sm:space-y-3.5 text-sm text-neutral-300">
                 <li className="flex items-center gap-2.5">
-                  <div className="size-1.5 rounded-full bg-orange-500" />
+                  <div className="size-1.5 rounded-full bg-orange-500 shrink-0" />
                   <span>Real-time Room Creation &amp; Joining</span>
                 </li>
                 <li className="flex items-center gap-2.5">
-                  <div className="size-1.5 rounded-full bg-orange-500" />
+                  <div className="size-1.5 rounded-full bg-orange-500 shrink-0" />
                   <span>Socket-based Tic-Tac-Toe matchmaking</span>
                 </li>
                 <li className="flex items-center gap-2.5">
-                  <div className="size-1.5 rounded-full bg-orange-500" />
+                  <div className="size-1.5 rounded-full bg-orange-500 shrink-0" />
                   <span>Interactive local player challenge modes</span>
                 </li>
               </ul>
             </div>
 
             {/* Ocean Card - Social */}
-            <div className="p-8 rounded-3xl bg-gradient-to-br from-cyan-600/5 to-transparent border border-cyan-500/10 hover:border-cyan-500/20 transition-all duration-300 group">
-              <div className="flex items-center gap-4 mb-6">
+            <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-cyan-600/5 to-transparent border border-cyan-500/10 hover:border-cyan-500/20 hover:shadow-[0_0_30px_rgba(0,180,216,0.08)] transition-all duration-300 group">
+              <div className="flex items-center gap-4 mb-4 sm:mb-6">
                 <div className="flex size-12 items-center justify-center rounded-2xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 shadow-lg shadow-cyan-500/5 group-hover:scale-105 transition-all">
                   <Waves className="size-6" />
                 </div>
                 <div>
                   <h4 className="text-lg font-bold text-white">The Ocean Depths</h4>
-                  <p className="text-xs text-cyan-400/80 font-medium">SOCIAL LOBBY HUBS</p>
+                  <p className="text-xs text-cyan-400/80 font-medium tracking-wider">SOCIAL LOBBY HUBS</p>
                 </div>
               </div>
 
-              <p className="text-sm text-neutral-400 leading-relaxed mb-6">
+              <p className="text-sm text-neutral-400 leading-relaxed mb-4 sm:mb-6">
                 Deeply integrated real-time chats, globally-sync'd friends directories, and notification streams. Stay synchronized with your squad and check active statuses with fluid ease.
               </p>
 
-              <ul className="space-y-3.5 text-sm text-neutral-300">
+              <ul className="space-y-2.5 sm:space-y-3.5 text-sm text-neutral-300">
                 <li className="flex items-center gap-2.5">
-                  <div className="size-1.5 rounded-full bg-cyan-500" />
+                  <div className="size-1.5 rounded-full bg-cyan-500 shrink-0" />
                   <span>Global Sync Friends directories &amp; Requests</span>
                 </li>
                 <li className="flex items-center gap-2.5">
-                  <div className="size-1.5 rounded-full bg-cyan-500" />
+                  <div className="size-1.5 rounded-full bg-cyan-500 shrink-0" />
                   <span>Real-time Socket Chat Hub &amp; Typing states</span>
                 </li>
                 <li className="flex items-center gap-2.5">
-                  <div className="size-1.5 rounded-full bg-cyan-500" />
+                  <div className="size-1.5 rounded-full bg-cyan-500 shrink-0" />
                   <span>Instant alerts with clean notification panels</span>
                 </li>
               </ul>

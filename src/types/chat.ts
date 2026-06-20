@@ -19,6 +19,7 @@ export interface Message {
   isRead: boolean;
   createdAt: string;
   updatedAt: string;
+  status?: "sending" | "sent" | "failed";
 }
 
 export interface SendMessageDto {
