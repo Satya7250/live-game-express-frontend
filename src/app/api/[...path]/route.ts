@@ -65,11 +65,12 @@ async function proxyRequest(req: NextRequest) {
     statusText: backendResponse.statusText,
   });
 
-  // Copy headers from backend to response, except content-length and hop-by-hop headers
+  // Copy headers from backend to response, except content-length, content-encoding, and hop-by-hop headers
   backendResponse.headers.forEach((value, key) => {
     const lowerKey = key.toLowerCase();
     if (
       lowerKey !== "content-length" &&
+      lowerKey !== "content-encoding" &&
       lowerKey !== "connection" &&
       lowerKey !== "transfer-encoding" &&
       lowerKey !== "keep-alive" &&
