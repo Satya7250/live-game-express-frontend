@@ -10,7 +10,7 @@ import {
 } from "@/lib/token";
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: typeof window !== "undefined" ? "/api" : process.env.NEXT_PUBLIC_API_URL,
   withCredentials: true,
   timeout: 10000,
   headers: {
