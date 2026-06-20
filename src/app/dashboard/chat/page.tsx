@@ -8,7 +8,8 @@ import {
   Users, 
   Loader2, 
   Circle, 
-  Plus
+  Plus,
+  ArrowLeft
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -99,6 +100,7 @@ function ChatHeader() {
   const conversations = useChatStore((state) => state.conversations);
   const onlineUsers = useChatStore((state) => state.onlineUsers);
   const currentUserId = useAuthStore((state) => state.user?._id);
+  const selectConversation = useChatStore((state) => state.selectConversation);
 
   const activeConversation = useMemo(() => 
     conversations.find((c) => c._id === activeConversationId),
@@ -115,6 +117,15 @@ function ChatHeader() {
   return (
     <div className="p-4 border-b border-border/40 flex items-center justify-between bg-background/25 shrink-0">
       <div className="flex items-center gap-3">
+        <Button
+          size="icon"
+          variant="ghost"
+          onClick={() => void selectConversation(null)}
+          className="sm:hidden size-8 rounded-lg text-neutral-400 hover:text-white hover:bg-white/5"
+        >
+          <ArrowLeft className="size-5" />
+        </Button>
+
         <Avatar className="size-10 border border-border/60">
           <AvatarImage src={activeRecipient?.avatar} alt={activeRecipient?.name} />
           <AvatarFallback className="bg-gradient-to-r from-red-500 via-purple-600 to-indigo-600 text-white font-medium text-xs">
@@ -170,7 +181,9 @@ function ConversationList({ onSelect }: { onSelect: (id: string) => void }) {
   }, [currentUserId]);
 
   return (
-    <div className="w-full sm:w-80 border-r border-border/40 flex flex-col shrink-0 bg-background/20 h-full">
+    <div className={`w-full sm:w-80 border-r border-border/40 flex-col shrink-0 bg-background/20 h-full ${
+      activeConversationId ? "hidden sm:flex" : "flex"
+    }`}>
       {/* Sidebar Header */}
       <div className="p-4 border-b border-border/40 flex items-center justify-between">
         <h3 className="font-bold text-sm uppercase tracking-wider text-neutral-300 flex items-center gap-1.5">
@@ -636,7 +649,9 @@ function ChatContent() {
       <ConversationList onSelect={(id) => void selectConversation(id)} />
 
       {/* RIGHT PANEL: CHAT WINDOW */}
-      <div className="flex-1 flex flex-col bg-background/5 h-full min-w-0">
+      <div className={`flex-1 flex-col bg-background/5 h-full min-w-0 ${
+        activeConversationId ? "flex" : "hidden sm:flex"
+      }`}>
         {activeConversationId ? (
           <>
             {/* Header: user info */}
