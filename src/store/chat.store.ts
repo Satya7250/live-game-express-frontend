@@ -52,6 +52,16 @@ export const useChatStore = create<ChatState>((set, get) => ({
           });
         });
         set({ onlineUsers: onlineMap });
+
+        // Join socket rooms for all conversations to receive real-time updates
+        try {
+          await ensureSocketConnected();
+          response.data.conversations.forEach((conv) => {
+            chatService.joinConversationSocket(conv._id);
+          });
+        } catch (error) {
+          console.warn("Failed to join all conversation socket rooms:", error);
+        }
       }
     } catch (error) {
       console.error("Failed to load conversations:", error);
@@ -63,6 +73,16 @@ export const useChatStore = create<ChatState>((set, get) => ({
   selectConversation: async (conversationId) => {
     set({ activeConversationId: conversationId });
     if (!conversationId) return;
+
+    // Mark recipient as online immediately when selected
+    const currentUser = useAuthStore.getState().user;
+    const activeConv = get().conversations.find((c) => c._id === conversationId);
+    const recipient = activeConv?.participants.find((p) => p._id !== currentUser?._id);
+    if (recipient) {
+      set((state) => ({
+        onlineUsers: { ...state.onlineUsers, [recipient._id]: true }
+      }));
+    }
 
     // Join socket room after ensuring connection is active to prevent race condition
     try {
@@ -122,6 +142,15 @@ export const useChatStore = create<ChatState>((set, get) => ({
 
     const currentUser = useAuthStore.getState().user;
     if (!currentUser) return;
+
+    // Mark recipient as online immediately when sending a message
+    const activeConv = get().conversations.find((c) => c._id === activeConversationId);
+    const recipient = activeConv?.participants.find((p) => p._id !== currentUser?._id);
+    if (recipient) {
+      set((state) => ({
+        onlineUsers: { ...state.onlineUsers, [recipient._id]: true }
+      }));
+    }
 
     // Generate a unique temporary ID for the optimistic update
     const tempId = `temp-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
@@ -290,6 +319,12 @@ export const useChatStore = create<ChatState>((set, get) => ({
     set((state) => ({
       onlineUsers: { ...state.onlineUsers, [message.sender._id]: true }
     }));
+
+    // If the conversation is not in our list, fetch conversations to load it in real-time
+    const convExists = get().conversations.some((c) => c._id === cid);
+    if (!convExists) {
+      void get().fetchConversations();
+    }
 
     set((state) => {
       const chatMsgs = state.messages[cid] || [];

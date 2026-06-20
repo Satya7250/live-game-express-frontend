@@ -629,14 +629,41 @@ function ChatContent() {
   const activeConversationId = useChatStore((state) => state.activeConversationId);
   const selectConversation = useChatStore((state) => state.selectConversation);
   const fetchConversations = useChatStore((state) => state.fetchConversations);
+  const loadingConversations = useChatStore((state) => state.loadingConversations);
+  const currentUserId = useAuthStore((state) => state.user?._id);
 
-  // Parse conversation ID from URL query parameters
+  // Parse conversation ID or User ID from URL query parameters in real-time
   useEffect(() => {
     const urlId = searchParams.get("id");
-    if (urlId && conversations.some((c) => c._id === urlId)) {
-      void selectConversation(urlId);
+    if (!urlId || loadingConversations) return;
+
+    // 1. Try to find conversation by conversation ID
+    const foundConv = conversations.find((c) => c._id === urlId);
+    if (foundConv) {
+      if (activeConversationId !== foundConv._id) {
+        void selectConversation(foundConv._id);
+      }
+      return;
     }
-  }, [searchParams, conversations, selectConversation]);
+
+    // 2. Try to find conversation by participant ID (User ID)
+    const foundUserConv = conversations.find((c) =>
+      c.participants.some((p) => p._id === urlId && p._id !== currentUserId)
+    );
+    if (foundUserConv) {
+      if (activeConversationId !== foundUserConv._id) {
+        void selectConversation(foundUserConv._id);
+      }
+      return;
+    }
+
+    // 3. If not found, attempt to start/fetch conversation with this friend/user
+    const startChat = async () => {
+      const startConversationWithFriend = useChatStore.getState().startConversationWithFriend;
+      await startConversationWithFriend(urlId);
+    };
+    void startChat();
+  }, [searchParams, conversations, loadingConversations, selectConversation, currentUserId, activeConversationId]);
 
   // Refetch conversations on mount
   useEffect(() => {

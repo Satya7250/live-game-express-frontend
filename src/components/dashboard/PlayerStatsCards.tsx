@@ -36,8 +36,8 @@ export function PlayerStatsCards() {
           r.players.some(p => p._id === user?._id)
         );
         
-        const playedCount = myFinishedRooms.length > 0 ? myFinishedRooms.length : 12; // Fallback to 12 if none
-        const winsCount = myFinishedRooms.length > 0 ? Math.floor(myFinishedRooms.length * 0.6) : 8; // Fallback to 8 if none
+        const playedCount = myFinishedRooms.length;
+        const winsCount = myFinishedRooms.filter(r => (r as any).winner === user?._id).length;
 
         setRoomsStats({
           active: activeRooms,
@@ -75,7 +75,7 @@ export function PlayerStatsCards() {
     );
   }
 
-  const winRate = roomsStats ? Math.round((roomsStats.wins / roomsStats.played) * 100) : 0;
+  const winRate = roomsStats && roomsStats.played > 0 ? Math.round((roomsStats.wins / roomsStats.played) * 100) : 0;
 
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

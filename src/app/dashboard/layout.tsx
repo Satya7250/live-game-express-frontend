@@ -31,9 +31,12 @@ export default function DashboardLayout({
   useEffect(() => {
     if (!isConnected) return;
 
-    // Auto-rejoin the active conversation room on connect / reconnect
-    const activeConversationId = useChatStore.getState().activeConversationId;
-    if (activeConversationId) {
+    // Rejoin all conversation rooms on connect / reconnect
+    const { conversations, activeConversationId } = useChatStore.getState();
+    conversations.forEach((conv) => {
+      joinConversationSocket(conv._id);
+    });
+    if (activeConversationId && !conversations.some((c) => c._id === activeConversationId)) {
       joinConversationSocket(activeConversationId);
     }
 
