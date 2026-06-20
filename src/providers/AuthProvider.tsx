@@ -18,11 +18,15 @@ export default function AuthProvider({ children }: Props) {
   useEffect(() => {
     const initializeAuth = async () => {
       try {
+        console.log("[AuthProvider] Initializing auth, calling getMe()...");
         const meResponse = await getMe();
+        console.log("[AuthProvider] getMe() response:", meResponse);
         if (meResponse.success && meResponse.data) {
+          console.log("[AuthProvider] Setting user from getMe():", meResponse.data);
           setUser(meResponse.data);
         }
       } catch (error) {
+        console.error("[AuthProvider] Error in initializeAuth:", error);
         clearAccessToken();
         setUser(null);
       }

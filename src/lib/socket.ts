@@ -233,7 +233,8 @@ export function emitSocketEvent<E extends keyof ClientToServerEvents>(
   ...args: Parameters<ClientToServerEvents[E]>
 ): void {
   if (!socket) {
-    throw new Error("Socket is not initialized");
+    console.warn(`[Socket] Warning: Attempted to emit event "${String(event)}" but socket is not initialized.`);
+    return;
   }
 
   socket.emit(event, ...args);

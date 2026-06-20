@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Edit3, RefreshCw } from "lucide-react";
+import { Edit3, RefreshCw, User, Mail, Fingerprint, Shield, Phone, MapPin, BookOpen, Calendar, Clock, Copy, Check } from "lucide-react";
+import { toast } from "sonner";
 
 import ProfileForm from "@/components/profile/ProfileForm";
 import { ProfileDetailItem } from "@/components/profile/ProfileDetailItem";
@@ -47,6 +48,18 @@ export default function ProfilePage() {
   const { profile, loading, error, fetchProfile, updateProfile } = useProfile();
   const authUser = useAuthStore((state) => state.user);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [copiedId, setCopiedId] = useState(false);
+
+  const handleCopyId = async (id: string) => {
+    try {
+      await navigator.clipboard.writeText(id);
+      setCopiedId(true);
+      toast.success("User ID copied to clipboard");
+      setTimeout(() => setCopiedId(false), 2000);
+    } catch {
+      toast.error("Failed to copy User ID");
+    }
+  };
 
   const displayProfile = profile ?? authUser;
 
@@ -152,43 +165,71 @@ export default function ProfilePage() {
                 <ProfileDetailItem
                   label="Name"
                   value={displayProfile.name || "Not set"}
+                  icon={<User className="size-5" />}
                 />
                 <ProfileDetailItem
                   label="Email"
                   value={displayProfile.email || "Not set"}
+                  icon={<Mail className="size-5" />}
                 />
                 <ProfileDetailItem
                   label="User ID"
-                  value={displayProfile._id}
+                  value={
+                    <div className="flex items-center justify-between gap-2 group/copy w-full">
+                      <span className="font-mono text-sm tracking-tight text-white select-all">
+                        {displayProfile._id}
+                      </span>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => handleCopyId(displayProfile._id)}
+                        className="size-7 rounded-md hover:bg-white/10 hover:text-white text-neutral-400 opacity-60 group-hover/copy:opacity-100 transition-opacity"
+                        title="Copy User ID"
+                      >
+                        {copiedId ? (
+                          <Check className="size-3.5 text-green-500" />
+                        ) : (
+                          <Copy className="size-3.5" />
+                        )}
+                      </Button>
+                    </div>
+                  }
+                  icon={<Fingerprint className="size-5" />}
                 />
                 <ProfileDetailItem
                   label="Role"
                   value={
-                    <Badge variant="outline" className="border-border/80">
+                    <Badge variant="outline" className="border-border/80 bg-white/5">
                       {formatRole(displayProfile.role)}
                     </Badge>
                   }
+                  icon={<Shield className="size-5" />}
                 />
                 <ProfileDetailItem
                   label="Phone"
                   value={displayProfile.phone || "Not set"}
+                  icon={<Phone className="size-5" />}
                 />
                 <ProfileDetailItem
                   label="Address"
                   value={displayProfile.address || "Not set"}
+                  icon={<MapPin className="size-5" />}
                 />
                 <ProfileDetailItem
                   label="Bio"
                   value={displayProfile.bio || "Not set"}
+                  icon={<BookOpen className="size-5" />}
+                  className="md:col-span-2"
                 />
                 <ProfileDetailItem
                   label="Member Since"
                   value={formatDateTime(displayProfile.createdAt)}
+                  icon={<Calendar className="size-5" />}
                 />
                 <ProfileDetailItem
                   label="Last Updated"
                   value={formatDateTime(displayProfile.updatedAt)}
-                  showSeparator={false}
+                  icon={<Clock className="size-5" />}
                 />
               </div>
             </CardContent>

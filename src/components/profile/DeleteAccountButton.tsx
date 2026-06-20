@@ -13,8 +13,7 @@ import {
 } from "@/schemas/profile.schema";
 import { getApiErrorMessage } from "@/lib/api-error";
 import * as userService from "@/services/user";
-import { logout as logoutApi } from "@/services/auth";
-import { useAuthStore } from "@/store/auth.store";
+import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -30,7 +29,7 @@ import {
 export default function DeleteAccountButton() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const logout = useAuthStore((state) => state.logout);
+  const { logout } = useAuth();
 
   const {
     register,
@@ -48,12 +47,11 @@ export default function DeleteAccountButton() {
       const response = await userService.deleteAccount(data);
 
       try {
-        await logoutApi();
+        await logout();
       } catch {
         // Session may already be invalidated after account deletion.
       }
 
-      logout();
       toast.success(response.message || "Account deleted successfully");
       router.replace("/login");
     } catch (err: unknown) {

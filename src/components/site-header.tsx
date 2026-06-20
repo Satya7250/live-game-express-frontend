@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
-import { Moon, Sun } from "lucide-react"
+import { Flame, Waves } from "lucide-react"
 import { useTheme } from "next-themes"
 
 export function SiteHeader() {
@@ -42,10 +42,10 @@ export function SiteHeader() {
           variant="ghost"
           size="icon"
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          className="size-9 rounded-xl hover:bg-muted/40 transition-colors"
+          className="size-9 rounded-xl hover:bg-muted/40 transition-colors relative"
         >
-          <Sun className="h-[1.1rem] w-[1.1rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 text-muted-foreground hover:text-foreground" />
-          <Moon className="absolute h-[1.1rem] w-[1.1rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 text-muted-foreground hover:text-foreground" />
+          <Waves className="h-[1.1rem] w-[1.1rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 text-muted-foreground hover:text-cyan-400" />
+          <Flame className="absolute h-[1.1rem] w-[1.1rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 text-muted-foreground hover:text-orange-500 fill-orange-500/10" />
           <span className="sr-only">Toggle theme</span>
         </Button>
       </div>

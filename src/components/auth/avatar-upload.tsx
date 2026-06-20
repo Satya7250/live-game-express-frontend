@@ -139,13 +139,13 @@ export default function AvatarUpload({
           className={`relative flex h-32 w-32 items-center justify-center overflow-hidden rounded-full border-2 border-dashed transition-all ${
             preview
               ? "border-transparent"
-              : "border-gray-300 hover:border-blue-500"
+              : "border-white/10 hover:border-cyan-500/50 bg-white/[0.02] hover:bg-cyan-500/[0.02]"
           }`}
         >
           {isUploading ? (
             <div className="flex flex-col items-center justify-center">
-              <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
-              <span className="mt-2 text-xs text-gray-500">
+              <Loader2 className="h-8 w-8 animate-spin text-cyan-500" />
+              <span className="mt-2 text-xs text-neutral-400">
                 Uploading...
               </span>
             </div>
@@ -157,7 +157,7 @@ export default function AvatarUpload({
               className="object-cover"
             />
           ) : (
-            <Upload className="h-10 w-10 text-gray-400 transition-colors group-hover:text-blue-500" />
+            <Upload className="h-8 w-8 text-neutral-500 transition-colors group-hover:text-cyan-400" />
           )}
         </div>
 
@@ -165,14 +165,14 @@ export default function AvatarUpload({
           <button
             type="button"
             onClick={handleRemove}
-            className="absolute -right-2 -top-2 rounded-full bg-red-500 p-1 text-white shadow-md transition-colors hover:bg-red-600"
+            className="absolute -right-1 -top-1 rounded-full bg-red-600/90 border border-red-500/30 p-1 text-white shadow-lg shadow-black/50 hover:bg-red-500 transition-all duration-200 cursor-pointer"
           >
-            <X className="h-4 w-4" />
+            <X className="h-3.5 w-3.5" />
           </button>
         )}
 
         {!preview && !isUploading && (
-          <div className="absolute inset-0 rounded-full bg-black/0 transition-all group-hover:bg-black/10" />
+          <div className="absolute inset-0 rounded-full bg-black/0 transition-all group-hover:bg-cyan-500/5" />
         )}
       </div>
 
@@ -186,7 +186,7 @@ export default function AvatarUpload({
       />
 
       {!isUploading && (
-        <span className="text-sm text-gray-500">
+        <span className="text-xs text-neutral-400 transition-colors duration-200 group-hover:text-neutral-300">
           {preview
             ? "Click to change image"
             : "Click to upload profile image"}

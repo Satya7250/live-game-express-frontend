@@ -9,15 +9,15 @@
  import { Skeleton } from "@/components/ui/skeleton";
  
  const chartConfig = {
-   wins: {
-     label: "Wins",
-     color: "oklch(0.55 0.22 27)", // Vibrant Crimson Accent
-   },
-   losses: {
-     label: "Losses",
-     color: "rgba(255, 255, 255, 0.2)", // Muted Charcoal/Silver
-   },
- } satisfies ChartConfig;
+  wins: {
+    label: "Wins",
+    color: "var(--primary)", // Theme primary color dynamically mapped
+  },
+  losses: {
+    label: "Losses",
+    color: "rgba(255, 255, 255, 0.2)", // Muted Charcoal/Silver
+  },
+} satisfies ChartConfig;
  
  export function GameHistoryChart() {
    const user = useAuthStore((state) => state.user);

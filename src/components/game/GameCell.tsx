@@ -1,9 +1,9 @@
 "use client";
 
 import { memo } from "react";
-
 import type { TicTacToeCell } from "@/types/tic-tac-toe";
 import { cn } from "@/lib/utils";
+import { Flame, Waves } from "lucide-react";
 
 interface GameCellProps {
   value: TicTacToeCell;
@@ -42,12 +42,13 @@ function GameCellComponent({
     >
       <span
         className={cn(
-          "transition-all duration-300",
+          "transition-all duration-300 flex items-center justify-center",
           value && "animate-in zoom-in-50",
           isLastMove && value && "scale-110"
         )}
       >
-        {value}
+        {value === "X" && <Waves className="size-10 sm:size-12 stroke-[2.5]" />}
+        {value === "O" && <Flame className="size-10 sm:size-12 stroke-[2.5] fill-red-500/10" />}
       </span>
       {isLastMove && value && (
         <span className="absolute inset-0 rounded-xl ring-2 ring-primary/30 animate-pulse" />

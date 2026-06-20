@@ -68,18 +68,57 @@ api.interceptors.request.use(
 );
 
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log("[Axios] Response received:", {
+      url: response.config.url,
+      status: response.status,
+      headers: response.headers,
+      data: response.data
+    });
+    
+    // Log Set-Cookie headers specifically for auth endpoints
+    const authUrls = ["/auth/login", "/auth/register", "/auth/refresh-token"];
+    if (response.config.url && authUrls.some(u => response.config.url!.includes(u))) {
+      console.log("[Axios] Auth endpoint response headers:", Object.fromEntries(Object.entries(response.headers)));
+      console.log("[Axios] Set-Cookie headers (from getAllResponseHeaders):", response.headers['set-cookie']);
+      
+      // Try to access headers via getAllResponseHeaders if available (for browser)
+      if (typeof response.request !== 'undefined' && 'getAllResponseHeaders' in response.request) {
+        console.log("[Axios] All response headers (raw):", (response.request as any).getAllResponseHeaders());
+      }
+    }
+    
+    return response;
+  },
 
   async (error: AxiosError) => {
+    console.error("[Axios] Error response:", {
+      url: error.config?.url,
+      status: error.response?.status,
+      headers: error.response?.headers,
+      data: error.response?.data
+    });
+    
     const originalRequest =
       error.config as InternalAxiosRequestConfig & {
         _retry?: boolean;
       };
 
+    const bypassAuthUrls = [
+      "/auth/login",
+      "/auth/register",
+      "/auth/refresh-token",
+      "/auth/forgot-password",
+      "/auth/reset-password",
+    ];
+
+    const url = originalRequest.url;
+    const shouldBypass = url && bypassAuthUrls.some((bypassUrl) => url.includes(bypassUrl));
+
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
-      originalRequest.url !== "/auth/refresh-token"
+      !shouldBypass
     ) {
       if (isRefreshing) {
         return new Promise<void>((resolve, reject) => {
@@ -130,4 +169,4 @@ api.interceptors.response.use(
   }
 );
 
-export default api;
+export default api;

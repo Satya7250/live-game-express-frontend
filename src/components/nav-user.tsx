@@ -22,7 +22,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { EllipsisVerticalIcon, CircleUserRoundIcon, BellIcon, LogOutIcon } from "lucide-react"
-import { useAuthStore } from "@/store/auth.store"
+import { useAuth } from "@/hooks/useAuth"
 import { Skeleton } from "@/components/ui/skeleton"
 
 export function NavUser({
@@ -35,11 +35,11 @@ export function NavUser({
   } | null
 }) {
   const { isMobile } = useSidebar()
-  const logout = useAuthStore((state) => state.logout)
+  const { logout } = useAuth()
   const router = useRouter()
 
-  const handleLogout = () => {
-    logout()
+  const handleLogout = async () => {
+    await logout()
     router.push("/login")
   }
 

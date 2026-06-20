@@ -18,8 +18,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Live Game Platform",
-  description: "Live Game Platform",
+  title: "Ignis & Aqua - Live Game Platform",
+  description: "Real-time arena matchmaking and elemental lobby system.",
 };
 
 export default function RootLayout({

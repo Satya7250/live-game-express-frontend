@@ -43,7 +43,7 @@ export default function ChangePasswordForm() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="mx-auto w-full max-w-md space-y-4"
+      className="w-full max-w-md space-y-4"
       noValidate
     >
       <div className="space-y-2">

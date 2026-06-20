@@ -21,14 +21,19 @@ function ProtectedRouteContent({ children }: Props) {
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
+    console.log("[ProtectedRoute] Setting hydrated to true");
     setHydrated(true);
   }, []);
 
   useEffect(() => {
+    console.log("[ProtectedRoute] useEffect triggered - hydrated:", hydrated, "isAuthenticated:", isAuthenticated);
     if (hydrated && !isAuthenticated) {
+      console.log("[ProtectedRoute] Not authenticated, redirecting to login");
       // Preserve the intended destination so we can redirect back after login
       const from = searchParams.get("from") ?? "/dashboard";
       router.replace(`/login?from=${encodeURIComponent(from)}`);
+    } else if (hydrated && isAuthenticated) {
+      console.log("[ProtectedRoute] Authenticated, rendering children");
     }
   }, [hydrated, isAuthenticated, router, searchParams]);
 

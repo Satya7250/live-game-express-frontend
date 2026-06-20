@@ -14,7 +14,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { Command } from "lucide-react"
+import { Swords } from "lucide-react"
 import { sidebarItems } from "@/constants/sidebar"
 import { useAuthStore } from "@/store/auth.store"
 
@@ -252,15 +252,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
-              className="data-[slot=sidebar-menu-button]:p-1.5! hover:bg-transparent"
+              className="data-[slot=sidebar-menu-button]:p-1.5! hover:bg-transparent group"
               asChild
             >
-              <Link href="/dashboard" className="flex items-center gap-2">
-                <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-red-600 to-red-800 text-white shadow-md shadow-red-950/20">
-                  <Command className="size-4.5" />
+              <Link href="/dashboard" className="flex items-center gap-2.5">
+                <div className="relative flex items-center justify-center size-8 rounded-lg bg-gradient-to-br from-orange-500 to-cyan-500 p-[1px] shadow-lg shadow-orange-500/10">
+                  <div className="flex size-full items-center justify-center rounded-[7px] bg-sidebar text-white">
+                    <Swords className="size-4 text-orange-500 group-hover:text-cyan-400 transition-colors duration-300" />
+                  </div>
                 </div>
-                <span className="text-base font-bold bg-gradient-to-r from-neutral-50 via-neutral-200 to-neutral-400 bg-clip-text text-transparent tracking-wide">
-                  Live Game
+                <span className="text-sm font-bold tracking-wider uppercase text-white font-heading">
+                  Ignis <span className="text-neutral-400">&amp;</span> Aqua
                 </span>
               </Link>
             </SidebarMenuButton>
