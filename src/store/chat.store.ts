@@ -45,9 +45,10 @@ export const useChatStore = create<ChatState>((set, get) => ({
         // Mark all conversation participants as online by default to populate status indicators
         const onlineMap: Record<string, boolean> = { ...get().onlineUsers };
         response.data.conversations.forEach((conv) => {
-          conv.participants.forEach((p) => {
-            if (!(p._id in onlineMap)) {
-              onlineMap[p._id] = Math.random() > 0.3; // Default realistic simulation
+          conv.participants.forEach((p: any) => {
+            const pid = typeof p === "string" ? p : (p?._id || p?.id);
+            if (pid && !(pid in onlineMap)) {
+              onlineMap[pid] = Math.random() > 0.3; // Default realistic simulation
             }
           });
         });
@@ -77,10 +78,14 @@ export const useChatStore = create<ChatState>((set, get) => ({
     // Mark recipient as online immediately when selected
     const currentUser = useAuthStore.getState().user;
     const activeConv = get().conversations.find((c) => c._id === conversationId);
-    const recipient = activeConv?.participants.find((p) => p._id !== currentUser?._id);
-    if (recipient) {
+    const recipientPart = activeConv?.participants.find((p: any) => {
+      const pid = typeof p === "string" ? p : (p?._id || p?.id);
+      return pid && pid !== currentUser?._id;
+    });
+    const recipientId = recipientPart ? (typeof recipientPart === "string" ? recipientPart : (recipientPart._id || (recipientPart as any).id)) : null;
+    if (recipientId) {
       set((state) => ({
-        onlineUsers: { ...state.onlineUsers, [recipient._id]: true }
+        onlineUsers: { ...state.onlineUsers, [recipientId]: true }
       }));
     }
 
@@ -145,10 +150,14 @@ export const useChatStore = create<ChatState>((set, get) => ({
 
     // Mark recipient as online immediately when sending a message
     const activeConv = get().conversations.find((c) => c._id === activeConversationId);
-    const recipient = activeConv?.participants.find((p) => p._id !== currentUser?._id);
-    if (recipient) {
+    const recipientPart = activeConv?.participants.find((p: any) => {
+      const pid = typeof p === "string" ? p : (p?._id || p?.id);
+      return pid && pid !== currentUser?._id;
+    });
+    const recipientId = recipientPart ? (typeof recipientPart === "string" ? recipientPart : (recipientPart._id || (recipientPart as any).id)) : null;
+    if (recipientId) {
       set((state) => ({
-        onlineUsers: { ...state.onlineUsers, [recipient._id]: true }
+        onlineUsers: { ...state.onlineUsers, [recipientId]: true }
       }));
     }
 

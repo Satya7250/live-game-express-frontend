@@ -107,10 +107,56 @@ function ChatHeader() {
     [conversations, activeConversationId]
   );
 
+  const { friends } = useFriends();
+
   const activeRecipient = useMemo(() => {
-    if (!activeConversation) return null;
-    return activeConversation.participants.find((p) => p._id !== currentUserId);
-  }, [activeConversation, currentUserId]);
+    if (!activeConversation || !activeConversation.participants) return null;
+    const recipientPart = activeConversation.participants.find((p: any) => {
+      const pid = typeof p === "string" ? p : (p?._id || p?.id);
+      return pid && pid !== currentUserId;
+    });
+    if (!recipientPart) return null;
+
+    const recipientId = typeof recipientPart === "string" ? recipientPart : (recipientPart._id || (recipientPart as any).id);
+
+    // 1. If it's a User object with a name, use it
+    if (typeof recipientPart !== "string" && recipientPart.name) {
+      return {
+        _id: recipientId,
+        name: recipientPart.name,
+        avatar: recipientPart.avatar,
+        email: recipientPart.email
+      };
+    }
+
+    // 2. Look up in friends list
+    const friend = friends.find((f) => f._id === recipientId);
+    if (friend) {
+      return {
+        _id: recipientId,
+        name: friend.name,
+        avatar: friend.avatar,
+        email: friend.email
+      };
+    }
+
+    // 3. Look up in messages
+    const chatMsgs = activeConversationId ? useChatStore.getState().messages[activeConversationId] || [] : [];
+    const msgFromRecipient = chatMsgs.find((m) => m.sender && m.sender._id === recipientId);
+    if (msgFromRecipient && msgFromRecipient.sender) {
+      return {
+        _id: recipientId,
+        name: msgFromRecipient.sender.name,
+        avatar: msgFromRecipient.sender.avatar,
+        email: msgFromRecipient.sender.email
+      };
+    }
+
+    return {
+      _id: recipientId,
+      name: "Player"
+    };
+  }, [activeConversation, currentUserId, friends, activeConversationId]);
 
   const isOnline = activeRecipient ? onlineUsers[activeRecipient._id] : false;
 
@@ -177,8 +223,53 @@ function ConversationList({ onSelect }: { onSelect: (id: string) => void }) {
   };
 
   const getRecipient = useCallback((conv: typeof conversations[0]) => {
-    return conv.participants.find((p) => p._id !== currentUserId);
-  }, [currentUserId]);
+    if (!conv || !conv.participants) return null;
+    const recipientPart = conv.participants.find((p: any) => {
+      const pid = typeof p === "string" ? p : (p?._id || p?.id);
+      return pid && pid !== currentUserId;
+    });
+    if (!recipientPart) return null;
+
+    const recipientId = typeof recipientPart === "string" ? recipientPart : (recipientPart._id || (recipientPart as any).id);
+
+    // 1. If it's a User object with a name, use it
+    if (typeof recipientPart !== "string" && recipientPart.name) {
+      return {
+        _id: recipientId,
+        name: recipientPart.name,
+        avatar: recipientPart.avatar,
+        email: recipientPart.email
+      };
+    }
+
+    // 2. Look up in friends list
+    const friend = friends.find((f) => f._id === recipientId);
+    if (friend) {
+      return {
+        _id: recipientId,
+        name: friend.name,
+        avatar: friend.avatar,
+        email: friend.email
+      };
+    }
+
+    // 3. Look up in messages
+    const chatMsgs = useChatStore.getState().messages[conv._id] || [];
+    const msgFromRecipient = chatMsgs.find((m) => m.sender && m.sender._id === recipientId);
+    if (msgFromRecipient && msgFromRecipient.sender) {
+      return {
+        _id: recipientId,
+        name: msgFromRecipient.sender.name,
+        avatar: msgFromRecipient.sender.avatar,
+        email: msgFromRecipient.sender.email
+      };
+    }
+
+    return {
+      _id: recipientId,
+      name: "Player"
+    };
+  }, [currentUserId, friends]);
 
   return (
     <div className={`w-full sm:w-80 border-r border-border/40 flex-col shrink-0 bg-background/20 h-full ${
